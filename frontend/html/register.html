@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Registration - KRUSHI MITHRA</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/register.css">
+</head>
+<body>
+    <!-- Floating Decorative Elements -->
+    <div class="floating-elements">
+        <span style="top: 15%; left: 12%;">🌻</span>
+        <span style="top: 35%; right: 18%;">🌽</span>
+        <span style="bottom: 25%; left: 20%;">🍅</span>
+        <span style="top: 55%; right: 12%;">🥕</span>
+    </div>
+
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <h1 class="logo">🌾 KRUSHI MITHRA 🚜</h1>
+                <ul class="nav-links">
+                    <li><a href="index.html">🏠 Home</a></li>
+                    <li><a href="register.html" class="active">📝 Register</a></li>
+                    <li><a href="farmer-login.html">🔑 Login</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="registration-section">
+        <div class="container">
+            <div class="registration-container">
+                <div class="registration-header">
+                    <h2>🌾 Farmer Registration 👨‍🌾</h2>
+                    <p>Join the KRUSHI MITHRA community today! 🚜</p>
+                </div>
+
+                <form id="registrationForm" class="registration-form" novalidate>
+                    <!-- Full Name -->
+                    <div class="form-group">
+                        <label for="fullName">
+                            <span class="label-text">👤 Full Name</span>
+                            <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="fullName" 
+                            name="fullName" 
+                            placeholder="Enter your full name"
+                            required
+                        >
+                        <span class="error-message" id="fullNameError"></span>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="email">
+                            <span class="label-text">📧 Email Address</span>
+                            <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            placeholder="example@email.com"
+                            required
+                        >
+                        <span class="error-message" id="emailError"></span>
+                    </div>
+
+                    <!-- Mobile Number -->
+                    <div class="form-group">
+                        <label for="mobile">
+                            <span class="label-text">📱 Mobile Number</span>
+                            <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="tel" 
+                            id="mobile" 
+                            name="mobile" 
+                            placeholder="10-digit mobile number"
+                            maxlength="10"
+                            required
+                        >
+                        <span class="error-message" id="mobileError"></span>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label for="password">
+                            <span class="label-text">🔒 Password</span>
+                            <span class="required">*</span>
+                        </label>
+                        <div class="password-input-wrapper">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                placeholder="Create a strong password"
+                                required
+                            >
+                            <button type="button" class="toggle-password" id="togglePassword">
+                                👁️
+                            </button>
+                        </div>
+                        <span class="error-message" id="passwordError"></span>
+                        <span class="helper-text">Minimum 8 characters, include uppercase, lowercase, number</span>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="form-group">
+                        <label for="confirmPassword">
+                            <span class="label-text">🔑 Confirm Password</span>
+                            <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="password" 
+                            id="confirmPassword" 
+                            name="confirmPassword" 
+                            placeholder="Re-enter your password"
+                            required
+                        >
+                        <span class="error-message" id="confirmPasswordError"></span>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="form-group">
+                        <label for="location">
+                            <span class="label-text">📍 Location</span>
+                            <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="location" 
+                            name="location" 
+                            placeholder="Village/City, District, State"
+                            required
+                        >
+                        <span class="error-message" id="locationError"></span>
+                    </div>
+
+                    <!-- Crop Type -->
+                    <div class="form-group">
+                        <label for="cropType">
+                            <span class="label-text">🌾 Primary Crop Type</span>
+                            <span class="required">*</span>
+                        </label>
+                        <select id="cropType" name="cropType" required>
+                            <option value="">Select your primary crop</option>
+                            <option value="rice">Rice (ಅಕ್ಕಿ / चावल)</option>
+                            <option value="wheat">Wheat (ಗೋಧಿ / गेहूं)</option>
+                            <option value="maize">Maize (ಮೆಕ್ಕೆ ಜೋಳ / मक्का)</option>
+                            <option value="sugarcane">Sugarcane (ಕಬ್ಬು / गन्ना)</option>
+                            <option value="cotton">Cotton (ಹತ್ತಿ / कपास)</option>
+                            <option value="pulses">Pulses (ಕಾಳುಗಳು / दालें)</option>
+                            <option value="vegetables">Vegetables (ತರಕಾರಿಗಳು / सब्ज़ियाँ)</option>
+                            <option value="fruits">Fruits (ಹಣ್ಣುಗಳು / फल)</option>
+                            <option value="spices">Spices (ಮಸಾಲೆಗಳು / मसाले)</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <span class="error-message" id="cropTypeError"></span>
+                    </div>
+
+                    <!-- Language Preference -->
+                    <div class="form-group">
+                        <label for="language">
+                            <span class="label-text">🌐 Language Preference</span>
+                            <span class="required">*</span>
+                        </label>
+                        <select id="language" name="language" required>
+                            <option value="">Select your preferred language</option>
+                            <option value="english">English</option>
+                            <option value="kannada">ಕನ್ನಡ (Kannada)</option>
+                            <option value="hindi">हिन्दी (Hindi)</option>
+                        </select>
+                        <span class="error-message" id="languageError"></span>
+                    </div>
+
+                    <!-- Terms and Conditions -->
+                    <div class="form-group checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="terms" name="terms" required>
+                            <span>I agree to the <a href="#terms">Terms and Conditions</a></span>
+                        </label>
+                        <span class="error-message" id="termsError"></span>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit" id="submitBtn">
+                            ✅ Register Now 🚀
+                        </button>
+                    </div>
+
+                    <!-- Success/Error Messages -->
+                    <div id="formMessage" class="form-message"></div>
+
+                    <!-- Login Link -->
+                    <div class="form-footer">
+                        <p>Already have an account? <a href="farmer-login.html">🔑 Login here</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 KRUSHI MITHRA. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../js/register.js"></script>
+</body>
+</html>

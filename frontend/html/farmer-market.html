@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Prices - KRUSHI MITHRA</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/farmer-dashboard.css">
+    <script src="../js/language-manager.js"></script>
+    <style>
+        .market-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+        .market-header {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 24px rgba(255, 152, 0, 0.3);
+        }
+        .market-header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        .filter-tabs {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        .filter-tab {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .filter-tab.active {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: white;
+            border-color: #4caf50;
+        }
+        .filter-tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .market-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        .market-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .market-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+        .commodity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .commodity-icon {
+            font-size: 3rem;
+        }
+        .commodity-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+        }
+        .price-display {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #2e7d32;
+            margin: 1rem 0;
+        }
+        .price-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .price-up {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .price-down {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .market-info {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid #f5f5f5;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.5rem 0;
+            color: #666;
+        }
+        .info-row .label {
+            font-weight: 600;
+        }
+        .info-row .value {
+            color: #333;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .action-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-buy {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: white;
+        }
+        .btn-buy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+        .btn-sell {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white;
+        }
+        .btn-sell:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+        }
+        .trend-indicator {
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header class="dashboard-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <h1 class="logo">🌾 KRUSHI MITHRA</h1>
+                </div>
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a href="farmer-dashboard.html" class="nav-link">Dashboard</a></li>
+                        <li><a href="farmer-profile.html" class="nav-link">Profile</a></li>
+                        <li><a href="farmer-crops.html" class="nav-link">My Crops</a></li>
+                        <li><a href="farmer-market.html" class="nav-link active">Market</a></li>
+                        <li><a href="farmer-support.html" class="nav-link">Support</a></li>
+                    </ul>
+                </nav>
+                <div class="user-section">
+                    <div class="language-selector">
+                        <select id="languageSelect" class="language-dropdown">
+                            <option value="english">🌐 English</option>
+                            <option value="kannada">🌐 ಕನ್ನಡ</option>
+                            <option value="hindi">🌐 हिन्दी</option>
+                        </select>
+                    </div>
+                    <div class="user-menu">
+                        <button class="user-btn" id="userMenuBtn">
+                            <span class="user-avatar">👤</span>
+                            <span class="user-name" id="userName">Farmer</span>
+                        </button>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="farmer-profile.html">My Profile</a>
+                            <a href="#settings">Settings</a>
+                            <a href="#" id="logoutBtn">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Market Content -->
+    <main class="market-container">
+        <div class="market-header">
+            <h1>📊 Market Prices</h1>
+            <p>Live commodity prices updated daily</p>
+            <small>Last updated: <span id="lastUpdated">Today, 10:00 AM</span></small>
+        </div>
+
+        <div class="filter-tabs">
+            <button class="filter-tab active" onclick="filterCategory('all')">All Commodities</button>
+            <button class="filter-tab" onclick="filterCategory('grains')">🌾 Grains</button>
+            <button class="filter-tab" onclick="filterCategory('vegetables')">🥬 Vegetables</button>
+            <button class="filter-tab" onclick="filterCategory('fruits')">🍎 Fruits</button>
+        </div>
+
+        <div class="market-grid" id="marketGrid">
+            <!-- Market cards will be loaded here -->
+        </div>
+    </main>
+
+    <script>
+        const API_URL = 'http://localhost:3000';
+
+        async function loadMarketPrices() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'farmer-login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/api/farmer/market-prices`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+                if (data.success && data.prices) {
+                    displayMarketPrices(data.prices);
+                }
+            } catch (error) {
+                console.error('Error loading market prices:', error);
+                displayMarketPrices(getSamplePrices());
+            }
+        }
+
+        function displayMarketPrices(prices) {
+            const grid = document.getElementById('marketGrid');
+            grid.innerHTML = prices.map(item => `
+                <div class="market-card" data-category="${item.category}">
+                    <div class="commodity-header">
+                        <div>
+                            <div class="commodity-name">${item.name}</div>
+                            <small style="color: #999;">${item.unit}</small>
+                        </div>
+                        <div class="commodity-icon">${item.icon}</div>
+                    </div>
+                    <div class="price-display">₹${item.price}</div>
+                    <span class="price-change ${item.change > 0 ? 'price-up' : 'price-down'}">
+                        <span class="trend-indicator">${item.change > 0 ? '📈' : '📉'}</span>
+                        ${item.change > 0 ? '+' : ''}${item.change}%
+                    </span>
+                    <div class="market-info">
+                        <div class="info-row">
+                            <span class="label">Market:</span>
+                            <span class="value">${item.market || 'Local Mandi'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Quality:</span>
+                            <span class="value">${item.quality || 'Grade A'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Trend:</span>
+                            <span class="value">${item.trend || 'Stable'}</span>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn btn-sell" onclick="sellCommodity('${item.name}')">
+                            💰 Sell ${item.name}
+                        </button>
+                        <button class="action-btn btn-buy" onclick="buyCommodity('${item.name}')">
+                            🛒 Buy ${item.name}
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getSamplePrices() {
+            return [
+                { name: 'Rice', price: '2,500', unit: 'per quintal', icon: '🌾', category: 'grains', change: 2.5, trend: 'Rising', market: 'Ramanagara Mandi', quality: 'Grade A' },
+                { name: 'Wheat', price: '2,200', unit: 'per quintal', icon: '🌾', category: 'grains', change: -1.2, trend: 'Falling', market: 'Ramanagara Mandi', quality: 'Grade A' },
+                { name: 'Tomato', price: '45', unit: 'per kg', icon: '🍅', category: 'vegetables', change: 5.8, trend: 'Rising', market: 'Local Market', quality: 'Fresh' },
+                { name: 'Onion', price: '35', unit: 'per kg', icon: '🧅', category: 'vegetables', change: -3.1, trend: 'Falling', market: 'Local Market', quality: 'Fresh' },
+                { name: 'Potato', price: '28', unit: 'per kg', icon: '🥔', category: 'vegetables', change: 1.5, trend: 'Stable', market: 'Local Market', quality: 'Fresh' },
+                { name: 'Banana', price: '50', unit: 'per dozen', icon: '🍌', category: 'fruits', change: 2.0, trend: 'Rising', market: 'Fruit Market', quality: 'Premium' }
+            ];
+        }
+
+        function filterCategory(category) {
+            // Update active tab
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Filter cards
+            const cards = document.querySelectorAll('.market-card');
+            cards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function sellCommodity(name) {
+            alert(`Sell ${name} functionality coming soon!\n\nYou will be able to:\n• List your produce for sale\n• Set your selling price\n• Connect with buyers\n• Track your sales`);
+        }
+
+        function buyCommodity(name) {
+            alert(`Buy ${name} functionality coming soon!\n\nYou will be able to:\n• Browse available produce\n• Compare prices\n• Place orders\n• Schedule delivery`);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadMarketPrices();
+
+            // User menu toggle
+            const userMenuBtn = document.getElementById('userMenuBtn');
+            const userDropdown = document.getElementById('userDropdown');
+            
+            userMenuBtn?.addEventListener('click', () => {
+                userDropdown.style.display = userDropdown.style.display === 'block' ? 'none' : 'block';
+            });
+
+            // Logout
+            document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('token');
+                window.location.href = 'farmer-login.html';
+            });
+
+            // Update last updated time
+            const now = new Date();
+            document.getElementById('lastUpdated').textContent = now.toLocaleString('en-IN', {
+                day: 'numeric',
+                month: 'short',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        });
+    </script>
+</body>
+</html>

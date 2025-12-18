@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Crops - KRUSHI MITHRA</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/farmer-dashboard.css">
+    <script src="../js/language-manager.js"></script>
+    <style>
+        .crops-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+        .page-header {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 24px rgba(76, 175, 80, 0.3);
+        }
+        .page-header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        .add-crop-btn {
+            background: white;
+            color: #2e7d32;
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+        .add-crop-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
+        }
+        .crops-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        .crop-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .crop-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+        .crop-header {
+            background: linear-gradient(135deg, #66bb6a, #4caf50);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .crop-icon {
+            font-size: 3rem;
+        }
+        .crop-body {
+            padding: 1.5rem;
+        }
+        .crop-info {
+            margin-bottom: 1rem;
+        }
+        .crop-info label {
+            display: block;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+        .crop-info .value {
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .crop-status {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+        .status-growing {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .status-harvesting {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+        .status-harvested {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+        .crop-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .action-btn {
+            flex: 1;
+            padding: 0.6rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-edit {
+            background: #2196f3;
+            color: white;
+        }
+        .btn-edit:hover {
+            background: #1976d2;
+        }
+        .btn-delete {
+            background: #f44336;
+            color: white;
+        }
+        .btn-delete:hover {
+            background: #d32f2f;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            transition: width 0.3s ease;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #999;
+        }
+        .empty-state-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header class="dashboard-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <h1 class="logo">🌾 KRUSHI MITHRA</h1>
+                </div>
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a href="farmer-dashboard.html" class="nav-link">Dashboard</a></li>
+                        <li><a href="farmer-profile.html" class="nav-link">Profile</a></li>
+                        <li><a href="farmer-crops.html" class="nav-link active">My Crops</a></li>
+                        <li><a href="farmer-market.html" class="nav-link">Market</a></li>
+                        <li><a href="farmer-support.html" class="nav-link">Support</a></li>
+                    </ul>
+                </nav>
+                <div class="user-section">
+                    <div class="language-selector">
+                        <select id="languageSelect" class="language-dropdown">
+                            <option value="english">🌐 English</option>
+                            <option value="kannada">🌐 ಕನ್ನಡ</option>
+                            <option value="hindi">🌐 हिन्दी</option>
+                        </select>
+                    </div>
+                    <div class="user-menu">
+                        <button class="user-btn" id="userMenuBtn">
+                            <span class="user-avatar">👤</span>
+                            <span class="user-name" id="userName">Farmer</span>
+                        </button>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="farmer-profile.html">My Profile</a>
+                            <a href="#settings">Settings</a>
+                            <a href="#" id="logoutBtn">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Crops Content -->
+    <main class="crops-container">
+        <div class="page-header">
+            <h1>🌱 My Crops Management</h1>
+            <p>Track and manage all your crops in one place</p>
+            <button class="add-crop-btn" onclick="addNewCrop()">➕ Add New Crop</button>
+        </div>
+
+        <div class="crops-grid" id="cropsGrid">
+            <!-- Sample Crop Cards -->
+            <div class="crop-card">
+                <div class="crop-header">
+                    <div>
+                        <h2 style="margin: 0; font-size: 1.5rem;">Rice</h2>
+                        <p style="margin: 0.3rem 0 0 0; opacity: 0.9;">Variety: IR-64</p>
+                    </div>
+                    <div class="crop-icon">🌾</div>
+                </div>
+                <div class="crop-body">
+                    <div class="crop-info">
+                        <label>Area Planted</label>
+                        <div class="value">2.5 acres</div>
+                    </div>
+                    <div class="crop-info">
+                        <label>Planting Date</label>
+                        <div class="value">15 Jan 2024</div>
+                    </div>
+                    <div class="crop-info">
+                        <label>Expected Harvest</label>
+                        <div class="value">15 May 2024</div>
+                    </div>
+                    <div class="crop-info">
+                        <label>Growth Progress</label>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%"></div>
+                        </div>
+                        <small style="color: #666;">65% Complete</small>
+                    </div>
+                    <span class="crop-status status-growing">🌱 Growing</span>
+                    <div class="crop-actions">
+                        <button class="action-btn btn-edit" onclick="editCrop('rice')">✏️ Edit</button>
+                        <button class="action-btn btn-delete" onclick="deleteCrop('rice')">🗑️ Delete</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="crop-card">
+                <div class="crop-header">
+                    <div>
+                        <h2 style="margin: 0; font-size: 1.5rem;">Wheat</h2>
+                        <p style="margin: 0.3rem 0 0 0; opacity: 0.9;">Variety: HD-2967</p>
+                    </div>
+                    <div class="crop-icon">🌾</div>
+                </div>
+                <div class="crop-body">
+                    <div class="crop-info">
+                        <label>Area Planted</label>
+                        <div class="value">1.5 acres</div>
+                    </div>
+                    <div class="crop-info">
+                        <label>Planting Date</label>
+                        <div class="value">1 Nov 2023</div>
+                    </div>
+                    <div class="crop-info">
+                        <label>Expected Harvest</label>
+                        <div class="value">15 Mar 2024</div>
+                    </div>
+                    <div class="crop-info">
+                        <label>Growth Progress</label>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 90%"></div>
+                        </div>
+                        <small style="color: #666;">90% Complete</small>
+                    </div>
+                    <span class="crop-status status-harvesting">🌾 Ready for Harvest</span>
+                    <div class="crop-actions">
+                        <button class="action-btn btn-edit" onclick="editCrop('wheat')">✏️ Edit</button>
+                        <button class="action-btn btn-delete" onclick="deleteCrop('wheat')">🗑️ Delete</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="crop-card">
+                <div class="crop-header">
+                    <div>
+                        <h2 style="margin: 0; font-size: 1.5rem;">Tomato</h2>
+                        <p style="margin: 0.3rem 0 0 0; opacity: 0.9;">Variety: Hybrid</p>
+                    </div>
+                    <div class="crop-icon">🍅</div>
+                </div>
+                <div class="crop-body">
+                    <div class="crop-info">
+                        <label>Area Planted</label>
+                        <div class="value">0.5 acres</div>
+                    </div>
+                    <div class="crop-info">
+                        <label>Planting Date</label>
+                        <div class="value">1 Dec 2023</div>
+                    </div>
+                    <div class="crop-info">
+                        <label>Expected Harvest</label>
+                        <div class="value">15 Feb 2024</div>
+                    </div>
+                    <div class="crop-info">
+                        <label>Growth Progress</label>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 40%"></div>
+                        </div>
+                        <small style="color: #666;">40% Complete</small>
+                    </div>
+                    <span class="crop-status status-growing">🌱 Growing</span>
+                    <div class="crop-actions">
+                        <button class="action-btn btn-edit" onclick="editCrop('tomato')">✏️ Edit</button>
+                        <button class="action-btn btn-delete" onclick="deleteCrop('tomato')">🗑️ Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function addNewCrop() {
+            alert('Add New Crop functionality coming soon!\n\nYou will be able to:\n• Select crop type\n• Enter planting area\n• Set planting and harvest dates\n• Track growth progress');
+        }
+
+        function editCrop(cropName) {
+            alert(`Edit ${cropName} functionality coming soon!`);
+        }
+
+        function deleteCrop(cropName) {
+            if (confirm(`Are you sure you want to delete ${cropName} crop record?`)) {
+                alert('Delete functionality will be implemented soon.');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'farmer-login.html';
+                return;
+            }
+
+            // User menu toggle
+            const userMenuBtn = document.getElementById('userMenuBtn');
+            const userDropdown = document.getElementById('userDropdown');
+            
+            userMenuBtn?.addEventListener('click', () => {
+                userDropdown.style.display = userDropdown.style.display === 'block' ? 'none' : 'block';
+            });
+
+            // Logout
+            document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('token');
+                window.location.href = 'farmer-login.html';
+            });
+        });
+    </script>
+</body>
+</html>

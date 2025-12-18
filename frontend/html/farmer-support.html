@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Center - KRUSHI MITHRA</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/farmer-dashboard.css">
+    <script src="../js/language-manager.js"></script>
+    <style>
+        .support-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+        .support-header {
+            background: linear-gradient(135deg, #2196f3, #1565c0);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 24px rgba(33, 150, 243, 0.3);
+            text-align: center;
+        }
+        .support-header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        .support-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .support-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+        .support-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        .support-card h3 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        .support-card p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+        .support-btn {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .support-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+        .faq-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        .faq-section h2 {
+            color: #2e7d32;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .faq-item {
+            border-bottom: 1px solid #e0e0e0;
+            padding: 1.5rem 0;
+        }
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+        .faq-question {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .faq-question:hover {
+            color: #4caf50;
+        }
+        .faq-answer {
+            color: #666;
+            line-height: 1.6;
+            padding-left: 1rem;
+            display: none;
+        }
+        .faq-answer.show {
+            display: block;
+        }
+        .contact-form {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+        .contact-form h2 {
+            color: #2e7d32;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4caf50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .submit-btn {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+        .emergency-contact {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        .emergency-contact h3 {
+            margin: 0 0 1rem 0;
+        }
+        .emergency-number {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header class="dashboard-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <h1 class="logo">🌾 KRUSHI MITHRA</h1>
+                </div>
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a href="farmer-dashboard.html" class="nav-link">Dashboard</a></li>
+                        <li><a href="farmer-profile.html" class="nav-link">Profile</a></li>
+                        <li><a href="farmer-crops.html" class="nav-link">My Crops</a></li>
+                        <li><a href="farmer-market.html" class="nav-link">Market</a></li>
+                        <li><a href="farmer-support.html" class="nav-link active">Support</a></li>
+                    </ul>
+                </nav>
+                <div class="user-section">
+                    <div class="language-selector">
+                        <select id="languageSelect" class="language-dropdown">
+                            <option value="english">🌐 English</option>
+                            <option value="kannada">🌐 ಕನ್ನಡ</option>
+                            <option value="hindi">🌐 हिन्दी</option>
+                        </select>
+                    </div>
+                    <div class="user-menu">
+                        <button class="user-btn" id="userMenuBtn">
+                            <span class="user-avatar">👤</span>
+                            <span class="user-name" id="userName">Farmer</span>
+                        </button>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="farmer-profile.html">My Profile</a>
+                            <a href="#settings">Settings</a>
+                            <a href="#" id="logoutBtn">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Support Content -->
+    <main class="support-container">
+        <div class="support-header">
+            <h1>🆘 Support Center</h1>
+            <p>We're here to help you 24/7</p>
+        </div>
+
+        <!-- Quick Support Options -->
+        <div class="support-grid">
+            <div class="support-card">
+                <div class="support-icon">📞</div>
+                <h3>Call Support</h3>
+                <p>Speak directly with our agricultural experts</p>
+                <button class="support-btn" onclick="callSupport()">Call Now</button>
+            </div>
+            <div class="support-card">
+                <div class="support-icon">💬</div>
+                <h3>Live Chat</h3>
+                <p>Chat with our support team in real-time</p>
+                <button class="support-btn" onclick="startChat()">Start Chat</button>
+            </div>
+            <div class="support-card">
+                <div class="support-icon">📧</div>
+                <h3>Email Support</h3>
+                <p>Send us an email and we'll respond within 24 hours</p>
+                <button class="support-btn" onclick="emailSupport()">Send Email</button>
+            </div>
+            <div class="support-card">
+                <div class="support-icon">🎥</div>
+                <h3>Video Call</h3>
+                <p>Schedule a video consultation with experts</p>
+                <button class="support-btn" onclick="scheduleVideo()">Schedule Call</button>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <h2>❓ Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    How do I register for government subsidies?
+                    <span>▼</span>
+                </div>
+                <div class="faq-answer">
+                    You can apply for government subsidies through the Dashboard > Government Subsidies section. Select the scheme you're eligible for, fill in the required details, and submit your application. You'll receive updates on your application status via notifications.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    How do I check current market prices?
+                    <span>▼</span>
+                </div>
+                <div class="faq-answer">
+                    Navigate to the Market section from the main menu. You'll see live prices for all major crops and vegetables. Prices are updated daily from local mandis and markets. You can also filter by category to find specific commodities.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    How do I get weather forecasts and alerts?
+                    <span>▼</span>
+                </div>
+                <div class="faq-answer">
+                    Weather information is displayed on your dashboard automatically based on your registered location. You'll receive alerts for severe weather conditions, and can view a 7-day forecast to plan your farming activities.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    How can I connect with agricultural experts?
+                    <span>▼</span>
+                </div>
+                <div class="faq-answer">
+                    Click on "Ask an Expert" from the Quick Actions section on your dashboard. You can submit your questions with photos, and experts will respond within 24 hours. You can also schedule video consultations for detailed discussions.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    What should I do if I face a pest problem?
+                    <span>▼</span>
+                </div>
+                <div class="faq-answer">
+                    Upload photos of the affected crops using the "Upload Crop Photo" feature. Our AI system and experts will identify the pest and suggest appropriate treatment methods. You can also order required pesticides through our platform.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    How do I track my crop history?
+                    <span>▼</span>
+                </div>
+                <div class="faq-answer">
+                    Go to My Crops section to view all your current and past crops. You can add new crops, track their growth, record expenses, and maintain a complete farming history for better planning.
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="contact-form">
+            <h2>📝 Submit a Support Request</h2>
+            <form id="supportForm" onsubmit="submitSupport(event)">
+                <div class="form-group">
+                    <label>Request Type</label>
+                    <select id="requestType" required>
+                        <option value="">Select a category</option>
+                        <option value="technical">Technical Issue</option>
+                        <option value="farming">Farming Advice</option>
+                        <option value="subsidy">Subsidy Related</option>
+                        <option value="market">Market Information</option>
+                        <option value="payment">Payment Issue</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Subject</label>
+                    <input type="text" id="subject" placeholder="Brief description of your issue" required>
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea id="message" placeholder="Provide detailed information about your request..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Contact Number</label>
+                    <input type="tel" id="contactNumber" placeholder="+91 XXXXX XXXXX" required>
+                </div>
+                <button type="submit" class="submit-btn">📤 Submit Request</button>
+            </form>
+        </div>
+
+        <!-- Emergency Contact -->
+        <div class="emergency-contact">
+            <h3>🚨 Emergency Helpline</h3>
+            <p>For urgent agricultural emergencies</p>
+            <div class="emergency-number">1800-180-1551</div>
+            <p style="margin-top: 1rem; opacity: 0.9;">Available 24x7 | Toll Free</p>
+        </div>
+    </main>
+
+    <script>
+        function toggleFaq(element) {
+            const answer = element.nextElementSibling;
+            const arrow = element.querySelector('span');
+            
+            if (answer.classList.contains('show')) {
+                answer.classList.remove('show');
+                arrow.textContent = '▼';
+            } else {
+                // Close all other FAQs
+                document.querySelectorAll('.faq-answer').forEach(ans => ans.classList.remove('show'));
+                document.querySelectorAll('.faq-question span').forEach(arr => arr.textContent = '▼');
+                
+                answer.classList.add('show');
+                arrow.textContent = '▲';
+            }
+        }
+
+        function callSupport() {
+            window.location.href = 'tel:18001801551';
+        }
+
+        function startChat() {
+            alert('Live Chat feature coming soon!\n\nYou will be able to:\n• Chat with support agents in real-time\n• Share screenshots and files\n• Get instant responses');
+        }
+
+        function emailSupport() {
+            window.location.href = 'mailto:support@krushimithra.com?subject=Support Request';
+        }
+
+        function scheduleVideo() {
+            alert('Video Call Scheduling coming soon!\n\nYou will be able to:\n• Schedule consultations with experts\n• Choose convenient time slots\n• Get personalized farming advice');
+        }
+
+        function submitSupport(event) {
+            event.preventDefault();
+            
+            const formData = {
+                type: document.getElementById('requestType').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value,
+                contact: document.getElementById('contactNumber').value
+            };
+
+            console.log('Support request:', formData);
+            
+            alert('Thank you for your support request!\n\nYour ticket has been created successfully.\nOur team will contact you within 24 hours.\n\nTicket ID: #' + Math.random().toString(36).substr(2, 9).toUpperCase());
+            
+            document.getElementById('supportForm').reset();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'farmer-login.html';
+                return;
+            }
+
+            // User menu toggle
+            const userMenuBtn = document.getElementById('userMenuBtn');
+            const userDropdown = document.getElementById('userDropdown');
+            
+            userMenuBtn?.addEventListener('click', () => {
+                userDropdown.style.display = userDropdown.style.display === 'block' ? 'none' : 'block';
+            });
+
+            // Logout
+            document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('token');
+                window.location.href = 'farmer-login.html';
+            });
+        });
+    </script>
+</body>
+</html>

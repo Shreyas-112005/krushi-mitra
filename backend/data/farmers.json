@@ -1,0 +1,40 @@
+{
+  "farmers": [
+    {
+      "_id": "farmer_1765989675506_ao5lyb3yz",
+      "fullName": "sagar",
+      "email": "sagarmysore@gmail.com",
+      "mobile": "9997777666",
+      "password": "$2b$10$MmLF08RS7ZLPNng2RT0bc.uznlvHdgnxE3Y3FULSw8y2YIMwj79j2",
+      "location": "banglore",
+      "cropType": "fruits",
+      "language": "kannada",
+      "status": "approved",
+      "isActive": true,
+      "registeredAt": "2025-12-17T16:41:15.508Z",
+      "lastLogin": "2025-12-18T17:05:49.918Z",
+      "createdAt": "2025-12-17T16:41:15.508Z",
+      "updatedAt": "2025-12-18T17:06:04.315Z",
+      "approvedBy": "main_admin_json",
+      "approvedAt": "2025-12-17T17:40:07.803Z"
+    },
+    {
+      "_id": "farmer_1765993347952_dsd30hx83",
+      "fullName": "akul",
+      "email": "akularadhya@gmail.com",
+      "mobile": "9922334466",
+      "password": "$2b$10$POSndGDA10ZFdyX.TJWsxuO8QILWD5HnJ.b8tcIh.KLUKn5BbII3i",
+      "location": "tumkur",
+      "cropType": "cotton",
+      "language": "kannada",
+      "status": "approved",
+      "isActive": true,
+      "registeredAt": "2025-12-17T17:42:27.953Z",
+      "lastLogin": null,
+      "createdAt": "2025-12-17T17:42:27.953Z",
+      "updatedAt": "2025-12-18T13:29:45.551Z",
+      "approvedBy": "main_admin_json",
+      "approvedAt": "2025-12-18T13:29:45.551Z"
+    }
+  ]
+}

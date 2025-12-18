@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Dashboard - KRUSHI MITHRA</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/farmer-dashboard.css">
+    <link rel="stylesheet" href="../css/weather-alerts.css">
+    <script src="../js/language-manager.js"></script>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header class="dashboard-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <h1 class="logo">🌾 KRUSHI MITHRA</h1>
+                </div>
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a href="farmer-dashboard.html" class="nav-link active" data-i18n="header.dashboard">Dashboard</a></li>
+                        <li><a href="farmer-profile.html" class="nav-link" data-i18n="header.profile">Profile</a></li>
+                        <li><a href="farmer-crops.html" class="nav-link" data-i18n="header.crops">My Crops</a></li>
+                        <li><a href="farmer-market.html" class="nav-link" data-i18n="header.market">Market</a></li>
+                        <li><a href="farmer-support.html" class="nav-link" data-i18n="header.support">Support</a></li>
+                    </ul>
+                </nav>
+                <div class="user-section">
+                    <div class="language-selector">
+                        <select id="languageSelect" class="language-dropdown">
+                            <option value="english">🌐 English</option>
+                            <option value="kannada">🌐 ಕನ್ನಡ</option>
+                            <option value="hindi">🌐 हिन्दी</option>
+                        </select>
+                    </div>
+                    <div class="user-menu">
+                        <button class="user-btn" id="userMenuBtn">
+                            <span class="user-avatar">👤</span>
+                            <span class="user-name" id="userName">Farmer</span>
+                        </button>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="farmer-profile.html" data-i18n="header.myProfile">My Profile</a>
+                            <a href="#settings" data-i18n="header.settings">Settings</a>
+                            <a href="#" id="logoutBtn" data-i18n="header.logout">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Content -->
+    <main class="dashboard-main">
+        <div class="container">
+            <!-- Welcome Section -->
+            <section class="welcome-section">
+                <div class="welcome-content">
+                    <h2 class="welcome-title" id="welcomeMessage"><span data-i18n="welcome.title">Welcome back</span>, <span id="farmerName">Farmer</span>!</h2>
+                    <p class="welcome-subtitle" data-i18n="welcome.subtitle">Here's what's happening with your farm today</p>
+                </div>
+                <div class="welcome-stats">
+                    <div class="stat-item">
+                        <span class="stat-icon">📅</span>
+                        <span class="stat-value" id="currentDate">Dec 16, 2025</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">📍</span>
+                        <span class="stat-value" id="farmerLocation">Loading...</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">🌾</span>
+                        <span class="stat-value" id="farmerCrop">Loading...</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Daily Farmer Information -->
+                <section class="dashboard-card daily-info">
+                    <div class="card-header">
+                        <h3><span class="icon">📋</span> <span data-i18n="sections.dailyInfo">Daily Information</span></h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="info-list">
+                            <div class="info-item">
+                                <span class="info-label">🌱 Planting Season:</span>
+                                <span class="info-value" id="plantingSeason">Monsoon (June-Sept)</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">💧 Irrigation Today:</span>
+                                <span class="info-value" id="irrigationStatus">Recommended</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">🌾 Harvest Period:</span>
+                                <span class="info-value" id="harvestPeriod">15-20 days</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">🦟 Pest Alert:</span>
+                                <span class="info-value alert" id="pestAlert">Monitor for aphids</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">💊 Fertilizer:</span>
+                                <span class="info-value" id="fertilizerInfo">Apply NPK this week</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Weather Update -->
+                <section class="dashboard-card weather-card">
+                    <div class="card-header">
+                        <h3><span class="icon">🌤️</span> <span data-i18n="sections.weatherInfo">Weather Information</span></h3>
+                        <button class="refresh-btn" id="refreshWeather" data-i18n="buttons.refresh">↻ Refresh</button>
+                    </div>
+                    <div class="card-content">
+                        <div class="weather-current">
+                            <div class="weather-main">
+                                <span class="weather-icon" id="weatherIcon">🌤️</span>
+                                <div class="weather-temp">
+                                    <span class="temp-value" id="temperature">28°C</span>
+                                    <span class="temp-desc" id="weatherDesc">Partly Cloudy</span>
+                                </div>
+                            </div>
+                            <div class="weather-details">
+                                <div class="weather-detail-item">
+                                    <span class="label" data-i18n="weather.humidity">💧 Humidity:</span>
+                                    <span class="value" id="humidity">65%</span>
+                                </div>
+                                <div class="weather-detail-item">
+                                    <span class="label" data-i18n="weather.windSpeed">🌬️ Wind:</span>
+                                    <span class="value" id="windSpeed">12 km/h</span>
+                                </div>
+                                <div class="weather-detail-item">
+                                    <span class="label" data-i18n="weather.rainfall">🌧️ Rain:</span>
+                                    <span class="value" id="rainfall">20%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="weather-forecast">
+                            <h4>5-Day Forecast</h4>
+                            <div class="forecast-list" id="forecastList">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Market Prices -->
+                <section class="dashboard-card market-prices">
+                    <div class="card-header">
+                        <h3><span class="icon">💰</span> Market Prices</h3>
+                        <button class="view-all-btn" id="viewAllPrices">View All</button>
+                    </div>
+                    <div class="card-content">
+                        <div class="market-tabs">
+                            <button class="tab-btn active" data-tab="vegetables">Vegetables</button>
+                            <button class="tab-btn" data-tab="fruits">Fruits</button>
+                            <button class="tab-btn" data-tab="grains">Grains</button>
+                        </div>
+                        <div class="price-list" id="priceList">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Government Schemes -->
+                <section class="dashboard-card schemes-card">
+                    <div class="card-header">
+                        <h3><span class="icon">🏛️</span> <span data-i18n="sections.subsidies">Government Subsidies</span></h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="schemes-list" id="schemesList">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Admin Notifications -->
+                <section class="dashboard-card notifications-card">
+                    <div class="card-header">
+                        <h3><span class="icon">🔔</span> <span data-i18n="sections.notifications">Notifications</span></h3>
+                        <span class="badge" id="notificationCount">0</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="notifications-list" id="notificationsList">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Quick Actions -->
+                <section class="dashboard-card quick-actions">
+                    <div class="card-header">
+                        <h3><span class="icon">⚡</span> <span data-i18n="sections.quickActions">Quick Actions</span></h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="actions-grid">
+                            <button class="action-btn" id="uploadCropPhoto">
+                                <span class="action-icon">📸</span>
+                                <span class="action-label">Upload Crop Photo</span>
+                            </button>
+                            <button class="action-btn" id="askExpert">
+                                <span class="action-icon">💬</span>
+                                <span class="action-label">Ask Expert</span>
+                            </button>
+                            <button class="action-btn" id="viewReports">
+                                <span class="action-icon">📊</span>
+                                <span class="action-label">View Reports</span>
+                            </button>
+                            <button class="action-btn" id="orderSupplies">
+                                <span class="action-icon">🛒</span>
+                                <span class="action-label">Order Supplies</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+        <div class="container">
+            <p>&copy; 2025 KRUSHI MITHRA. All rights reserved. | <a href="#help">Help Center</a> | <a href="#contact">Contact Support</a></p>
+        </div>
+    </footer>
+
+    <script src="../js/farmer-dashboard.js"></script>
+</body>
+</html>
