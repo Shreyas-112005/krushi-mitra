@@ -1,0 +1,194 @@
+{
+  "header": {
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "crops": "My Crops",
+    "market": "Market",
+    "support": "Support",
+    "myProfile": "My Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "login": "Login",
+    "register": "Register",
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "contact": "Contact",
+    "features": "Features"
+  },
+  "welcome": {
+    "title": "Welcome back",
+    "subtitle": "Here's what's happening with your farm today"
+  },
+  "sections": {
+    "dailyInfo": "Daily Information",
+    "weatherInfo": "Weather Information",
+    "marketPrices": "Market Prices",
+    "subsidies": "Government Subsidies",
+    "notifications": "Notifications",
+    "quickActions": "Quick Actions"
+  },
+  "weather": {
+    "humidity": "Humidity",
+    "windSpeed": "Wind",
+    "rainfall": "Rain",
+    "temperature": "Temperature",
+    "forecast": "Forecast",
+    "current": "Current Weather"
+  },
+  "buttons": {
+    "refresh": "Refresh",
+    "viewAll": "View All",
+    "apply": "Apply",
+    "applyNow": "Apply Now",
+    "register": "Register",
+    "save": "Save",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "edit": "Edit",
+    "delete": "Delete",
+    "update": "Update",
+    "back": "Back"
+  },
+  "farmer": {
+    "name": "Name",
+    "phone": "Phone Number",
+    "email": "Email",
+    "district": "District",
+    "taluk": "Taluk",
+    "village": "Village",
+    "landSize": "Land Size",
+    "crop": "Crop",
+    "password": "Password",
+    "confirmPassword": "Confirm Password"
+  },
+  "forms": {
+    "enterName": "Enter your name",
+    "enterPhone": "Enter phone number",
+    "enterEmail": "Enter email address",
+    "selectDistrict": "Select District",
+    "selectTaluk": "Select Taluk",
+    "selectVillage": "Select Village",
+    "enterLandSize": "Enter land size in acres",
+    "selectCrop": "Select primary crop",
+    "enterPassword": "Enter password",
+    "confirmPassword": "Confirm password"
+  },
+  "auth": {
+    "loginTitle": "Farmer Login",
+    "loginSubtitle": "Access your farming dashboard",
+    "registerTitle": "Farmer Registration",
+    "registerSubtitle": "Join KRUSHI MITHRA platform",
+    "phoneOrEmail": "Phone or Email",
+    "forgotPassword": "Forgot Password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "registerNow": "Register Now",
+    "loginNow": "Login Now"
+  },  "login": {
+    "title": "🌾 Farmer Login",
+    "subtitle": "Welcome back to KRUSHI MITHRA",
+    "email": "📧 Email Address",
+    "emailPlaceholder": "farmer@example.com",
+    "password": "🔒 Password",
+    "passwordPlaceholder": "Enter your password",
+    "loginButton": "🚀 Login",
+    "loggingIn": "Logging in...",
+    "noAccount": "Don't have an account?",
+    "registerHere": "📝 Register here",
+    "backHome": "🏠 ← Back to Home"
+  },  "login": {
+    "title": "🌾 Farmer Login",
+    "subtitle": "Welcome back to KRUSHI MITHRA",
+    "email": "📧 Email Address",
+    "emailPlaceholder": "farmer@example.com",
+    "password": "🔒 Password",
+    "passwordPlaceholder": "Enter your password",
+    "loginButton": "🚀 Login",
+    "loggingIn": "Logging in...",
+    "noAccount": "Don't have an account?",
+    "registerHere": "📝 Register here",
+    "backHome": "🏠 ← Back to Home"
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "subtitle": "Manage KRUSHI MITHRA Platform",
+    "farmers": "Farmers",
+    "marketPrices": "Market Prices",
+    "subsidies": "Subsidies",
+    "notifications": "Notifications",
+    "reports": "Reports"
+  },
+  "market": {
+    "commodity": "Commodity",
+    "price": "Price",
+    "unit": "Unit",
+    "market": "Market",
+    "date": "Date",
+    "trend": "Trend"
+  },
+  "subsidy": {
+    "name": "Subsidy Name",
+    "description": "Description",
+    "eligibility": "Eligibility",
+    "amount": "Amount",
+    "deadline": "Deadline",
+    "status": "Status",
+    "register": "Register"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "new": "New",
+    "read": "Read",
+    "markAsRead": "Mark as Read",
+    "deleteAll": "Delete All"
+  },
+  "messages": {
+    "success": "Success",
+    "error": "Error",
+    "loading": "Loading...",
+    "noData": "No data available",
+    "saved": "Saved successfully",
+    "deleted": "Deleted successfully",
+    "updated": "Updated successfully",
+    "loginSuccess": "Login successful",
+    "loginError": "Login failed. Please check your credentials",
+    "registerSuccess": "Registration successful",
+    "registerError": "Registration failed. Please try again"
+  },
+  "home": {
+    "heroTitle": "Welcome to KRUSHI MITHRA",
+    "heroSubtitle": "Your Complete Agriculture Platform for Karnataka Farmers",
+    "farmerLogin": "👨‍🌾 Login for Farmer",
+    "adminLogin": "👨‍💼 Admin Login",
+    "newUser": "New to KRUSHI MITHRA?",
+    "registerNew": "Register New",
+    "logo": "🌾 KRUSHI MITHRA",
+    "getStarted": "Get Started",
+    "learnMore": "Learn More",
+    "featuresTitle": "Platform Features",
+    "feature1Title": "Weather Updates",
+    "feature1Desc": "Real-time weather forecasts and alerts for your region",
+    "feature2Title": "Market Prices",
+    "feature2Desc": "Live market prices for agricultural commodities",
+    "feature3Title": "Government Subsidies",
+    "feature3Desc": "Information about available government schemes",
+    "feature4Title": "Expert Support",
+    "feature4Desc": "Connect with agricultural experts for guidance",
+    "statsTitle": "Our Impact",
+    "stat1": "Active Farmers",
+    "stat2": "Districts Covered",
+    "stat3": "Languages Supported",
+    "aboutTitle": "About KRUSHI MITHRA",
+    "aboutText": "KRUSHI MITHRA is a comprehensive digital platform designed to empower farmers across Karnataka with real-time information, market insights, and government support in multiple languages."
+  },
+  "register": {
+    "title": "Register",
+    "heading": "🌾 Farmer Registration 👨‍🌾",
+    "subtitle": "Join the KRUSHI MITHRA community today! 🚜",
+    "fullName": "👤 Full Name"
+  },
+  "footer": {
+    "copyright": "© 2025 KRUSHI MITHRA. All rights reserved."
+  }
+}

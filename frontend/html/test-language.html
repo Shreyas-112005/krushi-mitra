@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Test</title>
+    <script src="/frontend/js/language-manager.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+            margin: 20px 0;
+            border: 2px solid #4caf50;
+            border-radius: 5px;
+        }
+        .test-item {
+            padding: 15px;
+            margin: 10px 0;
+            background: #f9f9f9;
+            border-left: 4px solid #4caf50;
+        }
+        .console-output {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        .console-line {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 data-i18n="home.logo">🌾 KRUSHI MITHRA</h1>
+        
+        <div>
+            <label>Select Language:</label>
+            <select id="languageSelect">
+                <option value="en">English</option>
+                <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                <option value="hi">हिंदी (Hindi)</option>
+            </select>
+        </div>
+
+        <div class="test-item">
+            <h2 data-i18n="home.heroTitle">Welcome to KRUSHI MITHRA</h2>
+            <p data-i18n="home.heroSubtitle">Your Complete Agriculture Platform for Karnataka Farmers</p>
+        </div>
+
+        <div class="test-item">
+            <h3 data-i18n="login.title">Farmer Login</h3>
+            <p data-i18n="login.subtitle">Welcome back to KRUSHI MITHRA</p>
+        </div>
+
+        <div class="test-item">
+            <h3 data-i18n="register.heading">Farmer Registration</h3>
+            <p data-i18n="register.subtitle">Join the KRUSHI MITHRA community today!</p>
+        </div>
+
+        <div class="console-output" id="consoleOutput">
+            <div class="console-line">Console Output:</div>
+        </div>
+    </div>
+
+    <script>
+        // Intercept console.log
+        const consoleDiv = document.getElementById('consoleOutput');
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            const line = document.createElement('div');
+            line.className = 'console-line';
+            line.textContent = args.join(' ');
+            consoleDiv.appendChild(line);
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        };
+
+        const originalError = console.error;
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            const line = document.createElement('div');
+            line.className = 'console-line';
+            line.style.color = '#ff0000';
+            line.textContent = '❌ ' + args.join(' ');
+            consoleDiv.appendChild(line);
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        };
+
+        const originalWarn = console.warn;
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            const line = document.createElement('div');
+            line.className = 'console-line';
+            line.style.color = '#ffaa00';
+            line.textContent = '⚠️ ' + args.join(' ');
+            consoleDiv.appendChild(line);
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('=== LANGUAGE TEST STARTED ===');
+            console.log('Page loaded, initializing language manager...');
+            
+            if (window.krushiLang) {
+                console.log('✅ window.krushiLang found');
+                console.log('Current language:', window.krushiLang.currentLang);
+                
+                await window.krushiLang.initialize();
+                console.log('Initialization complete');
+                
+                const languageSelect = document.getElementById('languageSelect');
+                if (languageSelect) {
+                    languageSelect.value = window.krushiLang.currentLang || 'en';
+                    console.log('Language selector set to:', languageSelect.value);
+                    
+                    languageSelect.addEventListener('change', (e) => {
+                        const newLanguage = e.target.value;
+                        console.log('=== LANGUAGE CHANGE REQUESTED ===');
+                        console.log('Changing from', window.krushiLang.currentLang, 'to', newLanguage);
+                        window.krushiLang.changeLanguage(newLanguage);
+                    });
+                    
+                    console.log('✅ Language selector connected');
+                }
+            } else {
+                console.error('❌ window.krushiLang NOT FOUND!');
+            }
+        });
+    </script>
+</body>
+</html>

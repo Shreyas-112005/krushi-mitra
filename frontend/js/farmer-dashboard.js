@@ -13,10 +13,7 @@ const languageSelect = document.getElementById('languageSelect');
 
 // Initialize Dashboard
 document.addEventListener('DOMContentLoaded', async () => {
-    // Initialize language manager first
-    if (typeof languageManager !== 'undefined') {
-        await languageManager.initWithUserPreference();
-    }
+    console.log('🌾 Initializing Farmer Dashboard');
     
     checkAuthentication();
     loadFarmerData();
@@ -27,13 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadNotifications();
     setupEventListeners();
     
-    // Listen for language change events
-    window.addEventListener('languageChanged', (e) => {
-        console.log('Language changed:', e.detail.language);
-        // Reload dynamic content with new language
-        loadNotifications();
-        loadGovernmentSchemes();
-    });
+    console.log('✅ Dashboard initialized');
 });
 
 // Check Authentication
@@ -118,6 +109,9 @@ async function loadWeatherData() {
             return;
         }
 
+        // Show loading state
+        document.getElementById('weatherDesc').textContent = 'Loading weather...';
+
         const response = await fetch(`${API_URL}/farmer/weather`, {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -139,10 +133,14 @@ async function loadWeatherData() {
                 if (result.advice && result.advice.length > 0) {
                     displayAgriculturalAdvice(result.advice);
                 }
+                
+                console.log('✅ Weather data loaded successfully for:', result.location?.name || 'your location');
             } else {
+                console.warn('Weather API returned success=false');
                 useDemoWeatherData();
             }
         } else {
+            console.warn('Weather API request failed:', response.status);
             useDemoWeatherData();
         }
     } catch (error) {
@@ -401,39 +399,57 @@ async function loadGovernmentSchemes() {
 function loadDemoSchemes() {
     const schemes = [
         {
-            title: 'PM-KISAN',
+            title: 'PM-KISAN (Pradhan Mantri Kisan Samman Nidhi)',
             amount: 6000,
-            category: 'insurance',
-            description: 'Direct income support of ₹6000 per year to farmers',
+            category: 'income support',
+            description: 'Direct income support of ₹6000 per year to all landholding farmers',
             deadline: '31/12/2025',
-            link: '#pm-kisan',
+            link: 'https://pmkisan.gov.in',
             state: 'All India'
         },
         {
-            title: 'Crop Insurance',
-            amount: 5000,
+            title: 'Pradhan Mantri Fasal Bima Yojana (PMFBY)',
+            amount: 200000,
             category: 'insurance',
-            description: 'Protection against crop losses due to natural calamities',
+            description: 'Comprehensive crop insurance scheme protecting farmers against crop loss',
             deadline: '30/06/2025',
-            link: '#crop-insurance',
+            link: 'https://pmfby.gov.in',
             state: 'All India'
         },
         {
-            title: 'Soil Health Card',
-            amount: 3000,
-            category: 'other',
-            description: 'Free soil testing and recommendations for better yield',
-            deadline: '31/03/2026',
-            link: '#soil-health',
-            state: 'All India'
-        },
-        {
-            title: 'Kisan Credit Card',
+            title: 'Pradhan Mantri Krishi Sinchayee Yojana (PMKSY)',
             amount: 50000,
-            category: 'credit',
-            description: 'Easy credit access for farming needs at low interest',
+            category: 'irrigation',
+            description: 'Irrigation support to expand cultivable area - Per Drop More Crop initiative',
+            deadline: '31/03/2026',
+            link: 'https://pmksy.gov.in',
+            state: 'All India'
+        },
+        {
+            title: 'Soil Health Card Scheme',
+            amount: 0,
+            category: 'advisory',
+            description: 'Free soil testing and customized fertilizer recommendations for farmers',
             deadline: '31/12/2025',
-            link: '#kcc',
+            link: 'https://soilhealth.dac.gov.in',
+            state: 'All India'
+        },
+        {
+            title: 'PM Kisan Maandhan Yojana (Pension)',
+            amount: 36000,
+            category: 'pension',
+            description: '₹3,000 monthly pension to small and marginal farmers after 60 years',
+            deadline: '28/02/2026',
+            link: 'https://maandhan.in',
+            state: 'All India'
+        },
+        {
+            title: 'Kisan Drone Subsidy Scheme',
+            amount: 500000,
+            category: 'technology',
+            description: 'Financial assistance for purchasing drones for agricultural purposes',
+            deadline: '31/03/2026',
+            link: 'https://agricoop.nic.in',
             state: 'All India'
         }
     ];
@@ -444,6 +460,13 @@ function loadDemoSchemes() {
 // Update Schemes UI
 function updateSchemesUI(schemes) {
     const schemesList = document.getElementById('schemesList');
+    if (!schemesList) {
+        console.error('Schemes list element not found');
+        return;
+    }
+    
+    const registerText = window.krushiLang ? window.krushiLang.translate('subsidy.register') : 'Register';
+    
     schemesList.innerHTML = schemes.map(scheme => `
         <div class="scheme-item">
             <div class="scheme-header">
@@ -456,9 +479,11 @@ function updateSchemesUI(schemes) {
             </div>
             <div class="scheme-desc">${scheme.description}</div>
             ${scheme.deadline ? `<div class="scheme-deadline">⏰ Apply by: ${scheme.deadline}</div>` : ''}
-            <a href="${scheme.link}" class="scheme-action" target="_blank">Learn More →</a>
+            <a href="${scheme.link}" class="scheme-action" target="_blank">${registerText} →</a>
         </div>
     `).join('');
+    
+    console.log(`✅ Updated ${schemes.length} subsidy schemes`);
 }
 
 // Helper function to capitalize first letter
@@ -640,28 +665,30 @@ function setupEventListeners() {
     });
     
     // Language change - with proper update
-    languageSelect.addEventListener('change', async (e) => {
-        const selectedLanguage = e.target.value;
-        console.log('Language changed to:', selectedLanguage);
-        
-        // Update UI immediately
-        document.documentElement.lang = selectedLanguage;
-        
-        // Save to backend
-        await handleLanguageChange(selectedLanguage);
-        
-        // If language manager exists, use it
-        if (typeof languageManager !== 'undefined') {
-            await languageManager.changeLanguage(selectedLanguage);
-        }
-        
-        // Reload dynamic content with new language
-        loadNotifications();
-        loadGovernmentSchemes();
-        
-        // Show success message
-        showToast(`Language changed to ${selectedLanguage}`, 'success');
-    });
+    if (languageSelect) {
+        languageSelect.dataset.langListenerAdded = 'true'; // Mark to prevent double listeners
+        languageSelect.addEventListener('change', async (e) => {
+            const selectedLanguage = e.target.value;
+            console.log('🔄 Language changed to:', selectedLanguage);
+            
+            // Update using new language manager
+            if (window.krushiLang && window.krushiLang.isReady) {
+                window.krushiLang.changeLanguage(selectedLanguage);
+            }
+            
+            // Save to backend
+            await handleLanguageChange(selectedLanguage);
+            
+            // Reload dynamic content with new language
+            setTimeout(() => {
+                loadNotifications();
+                loadGovernmentSchemes();
+            }, 300);
+            
+            // Show success message
+            showToast(`Language changed to ${selectedLanguage}`, 'success');
+        });
+    }
     
     // Market tabs
     const tabButtons = document.querySelectorAll('.tab-btn');

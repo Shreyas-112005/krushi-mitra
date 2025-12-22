@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Farmer Registration - KRUSHI MITHRA</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/register.css">
+    <link rel="stylesheet" href="/frontend/css/style.css">
+    <link rel="stylesheet" href="/frontend/css/register.css">
+    <script src="/frontend/js/language-manager.js"></script>
 </head>
 <body>
     <!-- Floating Decorative Elements -->
@@ -19,11 +20,18 @@
     <header>
         <nav class="navbar">
             <div class="container">
-                <h1 class="logo">🌾 KRUSHI MITHRA 🚜</h1>
+                <h1 class="logo" data-i18n="home.logo">🌾 KRUSHI MITHRA 🚜</h1>
                 <ul class="nav-links">
-                    <li><a href="index.html">🏠 Home</a></li>
-                    <li><a href="register.html" class="active">📝 Register</a></li>
-                    <li><a href="farmer-login.html">🔑 Login</a></li>
+                    <li><a href="index.html" data-i18n="header.home">🏠 Home</a></li>
+                    <li><a href="register.html" class="active" data-i18n="register.title">📝 Register</a></li>
+                    <li><a href="farmer-login.html" data-i18n="login.title">🔑 Login</a></li>
+                    <li>
+                        <select id="languageSelect" class="language-dropdown">
+                            <option value="en">English</option>
+                            <option value="kn">ಕನ್ನಡ</option>
+                            <option value="hi">हिंदी</option>
+                        </select>
+                    </li>
                 </ul>
             </div>
         </nav>
@@ -33,15 +41,15 @@
         <div class="container">
             <div class="registration-container">
                 <div class="registration-header">
-                    <h2>🌾 Farmer Registration 👨‍🌾</h2>
-                    <p>Join the KRUSHI MITHRA community today! 🚜</p>
+                    <h2 data-i18n="register.heading">🌾 Farmer Registration 👨‍🌾</h2>
+                    <p data-i18n="register.subtitle">Join the KRUSHI MITHRA community today! 🚜</p>
                 </div>
 
                 <form id="registrationForm" class="registration-form" novalidate>
                     <!-- Full Name -->
                     <div class="form-group">
                         <label for="fullName">
-                            <span class="label-text">👤 Full Name</span>
+                            <span class="label-text" data-i18n="register.fullName">👤 Full Name</span>
                             <span class="required">*</span>
                         </label>
                         <input 
@@ -208,10 +216,35 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2025 KRUSHI MITHRA. All rights reserved.</p>
+            <p data-i18n="footer.copyright">&copy; 2025 KRUSHI MITHRA. All rights reserved.</p>
         </div>
     </footer>
 
-    <script src="../js/register.js"></script>
+    <script src="/frontend/js/register.js"></script>
+    <script>
+        // Initialize language manager
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🌐 Initializing registration page language support');
+            
+            if (window.krushiLang) {
+                await window.krushiLang.initialize();
+                
+                const languageSelect = document.getElementById('languageSelect');
+                if (languageSelect) {
+                    languageSelect.value = window.krushiLang.currentLang || 'en';
+                    
+                    languageSelect.addEventListener('change', (e) => {
+                        const newLanguage = e.target.value;
+                        console.log('🔄 Changing language to:', newLanguage);
+                        window.krushiLang.changeLanguage(newLanguage);
+                    });
+                    
+                    console.log('✅ Language selector connected');
+                }
+            } else {
+                console.error('❌ Language manager not found');
+            }
+        });
+    </script>
 </body>
 </html>

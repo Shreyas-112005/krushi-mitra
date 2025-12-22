@@ -1,83 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const axios = require('axios');
-
-// OpenWeather API configuration
-const WEATHER_API_KEY = process.env.OPENWEATHER_API_KEY || 'demo_key';
-const BASE_URL = 'https://api.openweathermap.org/data/2.5';
-const ONE_CALL_URL = 'https://api.openweathermap.org/data/3.0/onecall';
-const GEO_URL = 'http://api.openweathermap.org/geo/1.0';
-
-// Helper function to get coordinates from city name
-async function getCoordinates(city) {
-  try {
-    const url = `${GEO_URL}/direct?q=${encodeURIComponent(city)},IN&limit=1&appid=${WEATHER_API_KEY}`;
-    const response = await axios.get(url);
-    
-    if (response.data && response.data.length > 0) {
-      return {
-        lat: response.data[0].lat,
-        lon: response.data[0].lon,
-        name: response.data[0].name,
-        state: response.data[0].state || '',
-        country: response.data[0].country
-      };
-    }
-    return null;
-  } catch (error) {
-    console.error('Geocoding error:', error.message);
-    return null;
-  }
-}
-
-// Helper function to generate demo data
-function getDemoWeatherData(city) {
-  const today = new Date();
-  const forecast = [];
-  
-  for (let i = 1; i <= 7; i++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() + i);
-    forecast.push({
-      date: date.toISOString().split('T')[0],
-      day: date.toLocaleDateString('en-US', { weekday: 'short' }),
-      tempMax: 30 + Math.floor(Math.random() * 5),
-      tempMin: 20 + Math.floor(Math.random() * 5),
-      description: ['Clear sky', 'Partly cloudy', 'Light rain', 'Sunny'][Math.floor(Math.random() * 4)],
-      icon: '01d',
-      humidity: 60 + Math.floor(Math.random() * 20),
-      windSpeed: 10 + Math.floor(Math.random() * 10),
-      rainfall: Math.floor(Math.random() * 30)
-    });
-  }
-
-  return {
-    location: {
-      name: city,
-      state: 'Demo State',
-      country: 'IN'
-    },
-    current: {
-      temperature: 28,
-      feelsLike: 30,
-      description: 'Clear sky',
-      icon: '01d',
-      humidity: 65,
-      pressure: 1013,
-      windSpeed: 15,
-      windDirection: 180,
-      cloudiness: 20,
-      visibility: 10,
-      uvIndex: 6,
-      rainfall: 0,
-      sunrise: '06:00 AM',
-      sunset: '06:30 PM',
-      timestamp: new Date()
-    },
-    forecast,
-    alerts: []
-  };
-}
+const weatherService = require('../services/weather.service');
 
 // GET /weather/:city - Get current weather and 7-day forecast
 router.get('/:city', async (req, res) => {
@@ -91,14 +14,18 @@ router.get('/:city', async (req, res) => {
       });
     }
 
-    // Check if using demo API key
-    if (WEATHER_API_KEY === 'demo_key') {
-      return res.json({
-        success: true,
-        message: 'Demo mode - using simulated data',
-        data: getDemoWeatherData(city)
-      });
-    }
+    const weatherData = await weatherService.getWeatherByLocation(city);
+    res.json(weatherData);
+    
+  } catch (error) {
+    console.error('Weather route error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch weather data',
+      error: error.message
+    });
+  }
+});
 
     // Get coordinates for the city
     const coords = await getCoordinates(city);

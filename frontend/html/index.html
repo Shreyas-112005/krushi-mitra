@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KRUSHI MITHRA - Agriculture Platform for Karnataka</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="/frontend/css/style.css">
+    <script src="/frontend/js/language-manager.js"></script>
     <style>
         * {
             margin: 0;
@@ -50,6 +51,7 @@
             display: flex;
             list-style: none;
             gap: 2rem;
+            align-items: center;
         }
 
         .nav-links a {
@@ -63,6 +65,41 @@
 
         .nav-links a:hover {
             background: rgba(255,255,255,0.2);
+        }
+
+        .language-selector {
+            position: relative;
+        }
+
+        .language-dropdown {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            outline: none;
+            backdrop-filter: blur(10px);
+        }
+
+        .language-dropdown option {
+            background: #2e7d32;
+            color: white;
+            padding: 0.5rem;
+        }
+
+        .language-dropdown:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .language-dropdown:focus {
+            border-color: #FFD700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
 
         /* Hero Section */
@@ -534,12 +571,19 @@
     <header>
         <nav class="navbar">
             <div class="container">
-                <h1 class="logo">🌾 KRUSHI MITHRA</h1>
+                <h1 class="logo" data-i18n="home.logo">🌾 KRUSHI MITHRA</h1>
                 <ul class="nav-links">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#services">Services</a></li>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#about">About</a></li>
+                    <li><a href="#home" data-i18n="header.home">Home</a></li>
+                    <li><a href="#services" data-i18n="header.services">Services</a></li>
+                    <li><a href="#features" data-i18n="header.features">Features</a></li>
+                    <li><a href="#about" data-i18n="header.about">About</a></li>
+                    <li class="language-selector">
+                        <select id="languageSelect" class="language-dropdown">
+                            <option value="english">🌐 English</option>
+                            <option value="kannada">🌐 ಕನ್ನಡ</option>
+                            <option value="hindi">🌐 हिन्दी</option>
+                        </select>
+                    </li>
                 </ul>
             </div>
         </nav>
@@ -549,11 +593,14 @@
     <main>
         <section id="home" class="hero">
             <div class="container">
-                <h2>Welcome to KRUSHI MITHRA</h2>
-                <p>Your Complete Agriculture Platform for Karnataka Farmers</p>
+                <h2 data-i18n="home.heroTitle">Welcome to KRUSHI MITHRA</h2>
+                <p data-i18n="home.heroSubtitle">Your Complete Agriculture Platform for Karnataka Farmers</p>
                 <div class="cta-buttons">
-                    <a href="register.html" class="btn btn-primary">👨‍🌾 Register as Farmer</a>
-                    <a href="admin-login.html" class="btn btn-secondary">👨‍💼 Admin Login</a>
+                    <a href="farmer-login.html" class="btn btn-primary" data-i18n="home.farmerLogin">👨‍🌾 Login for Farmer</a>
+                    <a href="admin-login.html" class="btn btn-secondary" data-i18n="home.adminLogin">👨‍💼 Admin Login</a>
+                </div>
+                <div style="margin-top: 1rem;">
+                    <p style="color: white; font-size: 0.95rem;"><span data-i18n="home.newUser">New to KRUSHI MITHRA?</span> <a href="register.html" style="color: #FFD700; text-decoration: underline; font-weight: 600;" data-i18n="home.registerNew">Register New</a></p>
                 </div>
             </div>
         </section>
@@ -686,7 +733,7 @@
                         </div>
                     </div>
                     <div class="gallery-item">
-                        <img src="https://images.unsplash.com/photo-1595855759920-86dbfd56f4e8?w=600&h=400&fit=crop" alt="Cotton farming">
+                        <img src="https://images.unsplash.com/photo-1558905568-b9b89ebdab1c?w=600&h=400&fit=crop" alt="Cotton farming">
                         <div class="gallery-overlay">
                             <h4>Cotton Cultivation</h4>
                             <p>Supporting textile industry</p>
@@ -771,5 +818,38 @@
             <p style="margin-top: 0.5rem; font-size: 0.9rem;">Empowering Karnataka Farmers 🌾</p>
         </div>
     </footer>
+
+    <script>
+        // Initialize language manager on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🌐 Initializing home page language support');
+            
+            // Wait for language manager to be ready
+            if (window.krushiLang) {
+                await window.krushiLang.initialize();
+                console.log('✅ Language manager initialized for home page');
+                
+                // Set up language selector
+                const languageSelect = document.getElementById('languageSelect');
+                if (languageSelect) {
+                    // Set current language
+                    languageSelect.value = window.krushiLang.currentLang || 'en';
+                    
+                    // Add change event listener
+                    languageSelect.addEventListener('change', (e) => {
+                        const newLanguage = e.target.value;
+                        console.log('🔄 Changing language to:', newLanguage);
+                        window.krushiLang.changeLanguage(newLanguage);
+                    });
+                    
+                    console.log('✅ Language selector connected');
+                } else {
+                    console.error('❌ Language selector not found');
+                }
+            } else {
+                console.error('❌ Language manager (window.krushiLang) not found');
+            }
+        });
+    </script>
 </body>
 </html>

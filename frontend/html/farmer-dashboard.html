@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Farmer Dashboard - KRUSHI MITHRA</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/farmer-dashboard.css">
-    <link rel="stylesheet" href="../css/weather-alerts.css">
-    <script src="../js/language-manager.js"></script>
+    <link rel="stylesheet" href="/frontend/css/style.css">
+    <link rel="stylesheet" href="/frontend/css/farmer-dashboard.css">
+    <link rel="stylesheet" href="/frontend/css/weather-alerts.css">
+    <script src="/frontend/js/language-manager.js"></script>
 </head>
 <body>
     <!-- Navigation Header -->
@@ -227,6 +227,33 @@
         </div>
     </footer>
 
-    <script src="../js/farmer-dashboard.js"></script>
+    <script src="/frontend/js/farmer-dashboard.js"></script>
+    <script>
+        // Initialize language manager for dashboard
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🌐 Initializing farmer dashboard language support');
+            
+            if (window.krushiLang) {
+                // Language manager auto-initializes, just connect the selector
+                await new Promise(resolve => {
+                    if (window.krushiLang.isReady) {
+                        resolve();
+                    } else {
+                        setTimeout(resolve, 200);
+                    }
+                });
+                
+                const languageSelect = document.getElementById('languageSelect');
+                if (languageSelect) {
+                    languageSelect.value = window.krushiLang.currentLang || 'en';
+                    console.log('✅ Language selector connected on dashboard');
+                } else {
+                    console.error('❌ Language selector not found on dashboard');
+                }
+            } else {
+                console.error('❌ Language manager not found on dashboard');
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,44 +1,53 @@
 const express = require('express');
 const router = express.Router();
-const { getDailyPrices, marketPriceData } = require('../data/market-prices.data');
+const marketPriceService = require('../services/marketPrice.service');
 
 // GET /market-prices - Get all market prices
 router.get('/', async (req, res) => {
   try {
     const { category, market, state } = req.query;
-    const data = getDailyPrices();
+    const allPrices = await marketPriceService.getLatestPrices();
     
-    let vegetables = data.vegetables;
-    let fruits = data.fruits;
+    let vegetables = allPrices.vegetables || [];
+    let fruits = allPrices.fruits || [];
+    let grains = allPrices.grains || [];
     
     // Filter by category
     if (category === 'vegetables') {
       fruits = [];
+      grains = [];
     } else if (category === 'fruits') {
       vegetables = [];
+      grains = [];
+    } else if (category === 'grains') {
+      vegetables = [];
+      fruits = [];
     }
     
     // Filter by market
     if (market) {
       vegetables = vegetables.filter(item => item.market.toLowerCase().includes(market.toLowerCase()));
       fruits = fruits.filter(item => item.market.toLowerCase().includes(market.toLowerCase()));
+      grains = grains.filter(item => item.market.toLowerCase().includes(market.toLowerCase()));
     }
     
     // Filter by state
     if (state) {
       vegetables = vegetables.filter(item => item.state.toLowerCase() === state.toLowerCase());
       fruits = fruits.filter(item => item.state.toLowerCase() === state.toLowerCase());
+      grains = grains.filter(item => item.state.toLowerCase() === state.toLowerCase());
     }
     
     res.json({
       success: true,
       data: {
-        lastUpdated: data.lastUpdated,
-        dateRecorded: data.dateRecorded,
-        source: data.source,
+        lastUpdated: new Date().toISOString(),
+        dateRecorded: new Date().toISOString().split('T')[0],
+        source: 'Indian Government Market Data APIs',
         vegetables,
         fruits,
-        totalItems: vegetables.length + fruits.length
+        grains,
+        totalItems: vegetables.length + fruits.length + grains.length
       }
     });
   } catch (error) {
@@ -53,10 +62,10 @@ router.get('/', async (req, res) => {
 // GET /market-prices/vegetables - Get vegetable prices only
 router.get('/vegetables', async (req, res) => {
   try {
-    const data = getDailyPrices();
+    const allPrices = await marketPriceService.getLatestPrices();
     const { market, state, sort } = req.query;
     
-    let vegetables = data.vegetables;
+    let vegetables = allPrices.vegetables || [];
     
     // Filter by market
     if (market) {
@@ -81,9 +90,9 @@ router.get('/vegetables', async (req, res) => {
       success: true,
       data: {
         category: 'vegetables',
-        lastUpdated: data.lastUpdated,
-        dateRecorded: data.dateRecorded,
-        source: data.source,
+        lastUpdated: new Date().toISOString(),
+        dateRecorded: new Date().toISOString().split('T')[0],
+        source: 'Indian Government Market Data APIs',
         items: vegetables,
         totalItems: vegetables.length
       }

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Test - KRUSHI MITHRA</title>
+    <script src="../js/language-manager.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #2e7d32;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .language-selector {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+        }
+
+        .language-selector h2 {
+            color: white;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .language-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .lang-btn {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 10px;
+            background: white;
+            color: #2e7d32;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .lang-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .lang-btn.active {
+            background: #1b5e20;
+            color: white;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: #f5f5f5;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .card h3 {
+            color: #2e7d32;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            border-bottom: 2px solid #4caf50;
+            padding-bottom: 0.5rem;
+        }
+
+        .card-content {
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .item {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .item:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            font-weight: 600;
+            color: #2e7d32;
+            display: inline-block;
+            min-width: 120px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .demo-btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .demo-btn.primary {
+            background: #2e7d32;
+            color: white;
+        }
+
+        .demo-btn.secondary {
+            background: #ff9800;
+            color: white;
+        }
+
+        .demo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .status-indicator.success {
+            background: #c8e6c9;
+            color: #1b5e20;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e0e0e0;
+            color: #666;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.7rem 2rem;
+            background: #2e7d32;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            background: #1b5e20;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌾 <span data-i18n="home.heroTitle">KRUSHI MITHRA</span></h1>
+            <p data-i18n="home.heroSubtitle">Multi-Language Support Demo</p>
+        </div>
+
+        <div class="language-selector">
+            <h2>🌐 Select Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ / भाषा चुनें</h2>
+            <div class="language-buttons">
+                <button class="lang-btn active" onclick="changeLanguage('english')">
+                    🇬🇧 English
+                </button>
+                <button class="lang-btn" onclick="changeLanguage('kannada')">
+                    🇮🇳 ಕನ್ನಡ (Kannada)
+                </button>
+                <button class="lang-btn" onclick="changeLanguage('hindi')">
+                    🇮🇳 हिन्दी (Hindi)
+                </button>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <!-- Header Navigation Card -->
+            <div class="card">
+                <h3 data-i18n="header.home">Navigation</h3>
+                <div class="card-content">
+                    <div class="item">
+                        <span class="label" data-i18n="header.dashboard">Dashboard</span>
+                    </div>
+                    <div class="item">
+                        <span class="label" data-i18n="header.profile">Profile</span>
+                    </div>
+                    <div class="item">
+                        <span class="label" data-i18n="header.crops">My Crops</span>
+                    </div>
+                    <div class="item">
+                        <span class="label" data-i18n="header.market">Market</span>
+                    </div>
+                    <div class="item">
+                        <span class="label" data-i18n="header.support">Support</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weather Information Card -->
+            <div class="card">
+                <h3 data-i18n="sections.weatherInfo">Weather Information</h3>
+                <div class="card-content">
+                    <div class="item">
+                        <span class="label" data-i18n="weather.temperature">Temperature:</span>
+                        <span>28°C</span>
+                    </div>
+                    <div class="item">
+                        <span class="label" data-i18n="weather.humidity">Humidity:</span>
+                        <span>65%</span>
+                    </div>
+                    <div class="item">
+                        <span class="label" data-i18n="weather.windSpeed">Wind Speed:</span>
+                        <span>12 km/h</span>
+                    </div>
+                    <div class="item">
+                        <span class="label" data-i18n="weather.rainfall">Rainfall:</span>
+                        <span>20%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Farmer Information Card -->
+            <div class="card">
+                <h3 data-i18n="header.profile">Farmer Information</h3>
+                <div class="card-content">
+                    <div class="item">
+                        <span class="label" data-i18n="farmer.name">Name:</span>
+                        <span>Ramesh Kumar</span>
+                    </div>
+                    <div class="item">
+                        <span class="label" data-i18n="farmer.district">District:</span>
+                        <span>Bengaluru</span>
+                    </div>
+                    <div class="item">
+                        <span class="label" data-i18n="farmer.village">Village:</span>
+                        <span>Devanahalli</span>
+                    </div>
+                    <div class="item">
+                        <span class="label" data-i18n="farmer.landSize">Land Size:</span>
+                        <span>5 Acres</span>
+                    </div>
+                    <div class="item">
+                        <span class="label" data-i18n="farmer.crop">Crop:</span>
+                        <span>Rice</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Market Prices Card -->
+            <div class="card">
+                <h3 data-i18n="sections.marketPrices">Market Prices</h3>
+                <div class="card-content">
+                    <div class="item">
+                        <span class="label" data-i18n="market.commodity">Commodity:</span>
+                        <span>Rice</span>
+                    </div>
+                    <div class="item">
+                        <span class="label" data-i18n="market.price">Price:</span>
+                        <span>₹2,800 / Quintal</span>
+                    </div>
+                    <div class="item">
+                        <span class="label" data-i18n="market.market">Market:</span>
+                        <span>Yeshwanthpur APMC</span>
+                    </div>
+                    <div class="item">
+                        <span class="label" data-i18n="market.date">Date:</span>
+                        <span>Dec 19, 2025</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons Demo Card -->
+            <div class="card">
+                <h3 data-i18n="buttons.submit">Action Buttons</h3>
+                <div class="card-content">
+                    <div class="button-group">
+                        <button class="demo-btn primary" data-i18n="buttons.save">Save</button>
+                        <button class="demo-btn secondary" data-i18n="buttons.edit">Edit</button>
+                        <button class="demo-btn primary" data-i18n="buttons.refresh">Refresh</button>
+                        <button class="demo-btn secondary" data-i18n="buttons.viewAll">View All</button>
+                    </div>
+                    <div class="status-indicator success">
+                        <span data-i18n="messages.success">Success</span> ✓
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages Card -->
+            <div class="card">
+                <h3 data-i18n="notifications.title">Messages</h3>
+                <div class="card-content">
+                    <div class="item">
+                        <span class="label" data-i18n="messages.loading">Loading...</span>
+                    </div>
+                    <div class="item">
+                        <span class="label" data-i18n="messages.success">Success</span>
+                    </div>
+                    <div class="item">
+                        <span class="label" data-i18n="messages.saved">Saved</span>
+                    </div>
+                    <div class="item">
+                        <span class="label" data-i18n="messages.loginSuccess">Login Success</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p data-i18n="home.aboutText">
+                KRUSHI MITHRA is a comprehensive digital platform designed to empower farmers 
+                across Karnataka with real-time information, market insights, and government 
+                support in multiple languages.
+            </p>
+            <a href="index.html" class="back-link" data-i18n="buttons.back">← Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        function changeLanguage(lang) {
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Change language
+            languageManager.setLanguage(lang);
+        }
+
+        // Listen for language change events
+        window.addEventListener('languageChanged', (e) => {
+            console.log('Language changed to:', e.detail.language);
+        });
+    </script>
+</body>
+</html>

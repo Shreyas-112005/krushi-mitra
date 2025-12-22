@@ -388,34 +388,17 @@ const getTrendingPrices = async (req, res) => {
 const getWeather = async (req, res) => {
   try {
     const farmer = req.farmer;
+    const weatherService = require('../services/weather.service');
     
-    // Demo weather data with proper format
-    const weather = {
-      success: true,
-      location: farmer?.location || 'Mysore',
-      current: {
-        temperature: 28,
-        description: 'Partly Cloudy',
-        icon: '🌤️',
-        humidity: 65,
-        windSpeed: 12,
-        rainfall: 20,
-        uvIndex: 7
-      },
-      forecast: [
-        { day: 'Mon', icon: '☀️', tempMax: 30, tempMin: 22 },
-        { day: 'Tue', icon: '🌤️', tempMax: 28, tempMin: 21 },
-        { day: 'Wed', icon: '🌧️', tempMax: 26, tempMin: 20 },
-        { day: 'Thu', icon: '⛈️', tempMax: 25, tempMin: 19 },
-        { day: 'Fri', icon: '🌤️', tempMax: 29, tempMin: 22 },
-        { day: 'Sat', icon: '☀️', tempMax: 31, tempMin: 23 },
-        { day: 'Sun', icon: '🌤️', tempMax: 29, tempMin: 21 }
-      ],
-      hasAlerts: false,
-      alerts: []
-    };
-
-    res.json(weather);
+    // Use farmer's location for weather data
+    const location = farmer?.location || 'Bangalore';
+    
+    console.log(`[WEATHER API] Fetching weather for location: ${location}`);
+    
+    // Get real weather data from weather service
+    const weatherData = await weatherService.getWeatherByLocation(location);
+    
+    res.json(weatherData);
   } catch (error) {
     console.error('[FARMER API] Get weather error:', error);
     res.status(500).json({
