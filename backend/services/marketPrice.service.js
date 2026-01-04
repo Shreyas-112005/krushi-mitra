@@ -164,6 +164,37 @@ class MarketPriceService {
   }
 
   /**
+   * Update market prices in database
+   */
+  async updateMarketPrices() {
+    try {
+      console.log('🔄 Updating market prices in database...');
+      
+      // Use vegetable price service for real data
+      const VegetablePriceService = require('./vegetablePrice.service');
+      const result = await VegetablePriceService.updateDatabasePrices();
+      
+      if (result.success) {
+        console.log(`✅ Successfully updated ${result.count} market prices`);
+        return {
+          success: true,
+          count: result.count,
+          message: `Updated ${result.count} market prices`
+        };
+      } else {
+        throw new Error(result.message || 'Failed to update prices');
+      }
+    } catch (error) {
+      console.error('❌ Error updating market prices:', error.message);
+      return {
+        success: false,
+        message: error.message,
+        count: 0
+      };
+    }
+  }
+
+  /**
    * Get latest prices with caching
    */
   async getLatestPrices() {

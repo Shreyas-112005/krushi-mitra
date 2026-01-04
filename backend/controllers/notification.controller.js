@@ -1,53 +1,57 @@
-// Store notifications in memory (in production, use database)
-let notifications = [
-  {
-    _id: '1',
-    title: 'Welcome to KRUSHI MITHRA',
-    message: 'Thank you for joining our platform!',
-    type: 'info',
-    isRead: false,
-    audience: 'farmer',
-    createdAt: new Date()
-  },
-  {
-    _id: '2',
-    title: 'Market Alert',
-    message: 'Rice prices increased by 10% in Mysore market',
-    type: 'alert',
-    isRead: false,
-    audience: 'farmer',
-    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000)
-  },
-  {
-    _id: '3',
-    title: 'New Farmer Registration',
-    message: 'A new farmer has registered and is awaiting approval',
-    type: 'info',
-    isRead: false,
-    audience: 'admin',
-    createdAt: new Date()
-  }
-];
+const Notification = require('../models/notification.model');
+const Farmer = require('../models/farmer.model');
 
 /**
  * Get Farmer Notifications
+ * Returns all active notifications relevant to the logged-in farmer
  */
 const getFarmerNotifications = async (req, res) => {
   try {
-    // Filter notifications for farmers
-    const farmerNotifications = notifications.filter(n => 
-      n.audience === 'farmer' || n.audience === 'all'
+    const farmerId = req.farmer?._id;
+    
+    // Get farmer data to check targeting
+    const farmer = await Farmer.findById(farmerId);
+    if (!farmer) {
+      return res.status(404).json({
+        success: false,
+        message: 'Farmer not found'
+      });
+    }
+
+    // Get all active notifications
+    const allNotifications = await Notification.find({
+      isActive: true,
+      $or: [
+        { expiryDate: { $exists: false } },
+        { expiryDate: { $gte: new Date() } }
+      ]
+    })
+    .sort({ createdAt: -1 })
+    .limit(50);
+
+    // Filter notifications relevant for this farmer
+    const relevantNotifications = allNotifications.filter(notification => 
+      notification.isRelevantForFarmer(farmer)
     );
+
+    // Mark which ones have been read by this farmer
+    const notificationsWithReadStatus = relevantNotifications.map(notif => {
+      const notifObj = notif.toObject();
+      notifObj.isRead = notif.readBy.some(r => r.farmer.toString() === farmerId.toString());
+      return notifObj;
+    });
 
     res.json({
       success: true,
-      data: farmerNotifications
+      data: notificationsWithReadStatus,
+      count: notificationsWithReadStatus.length
     });
   } catch (error) {
     console.error('[NOTIFICATION] Get notifications error:', error);
     res.status(500).json({
       success: false,
-      message: 'Error fetching notifications'
+      message: 'Error fetching notifications',
+      error: error.message
     });
   }
 };
@@ -58,6 +62,34 @@ const getFarmerNotifications = async (req, res) => {
 const markAsRead = async (req, res) => {
   try {
     const { id } = req.params;
+    const farmerId = req.farmer?._id;
+
+    if (!farmerId) {
+      return res.status(401).json({
+        success: false,
+        message: 'Unauthorized'
+      });
+    }
+
+    const notification = await Notification.findById(id);
+    
+    if (!notification) {
+      return res.status(404).json({
+        success: false,
+        message: 'Notification not found'
+      });
+    }
+
+    // Check if already marked as read
+    const alreadyRead = notification.readBy.some(r => r.farmer.toString() === farmerId.toString());
+    
+    if (!alreadyRead) {
+      notification.readBy.push({
+        farmer: farmerId,
+        readAt: new Date()
+      });
+      await notification.save();
+    }
 
     res.json({
       success: true,
@@ -67,80 +99,152 @@ const markAsRead = async (req, res) => {
     console.error('[NOTIFICATION] Mark as read error:', error);
     res.status(500).json({
       success: false,
-      message: 'Error updating notification'
+      message: 'Error updating notification',
+      error: error.message
     });
   }
 };
 
 /**
  * Get Admin Notifications
+ * Returns system notifications for admins
  */
 const getAdminNotifications = async (req, res) => {
   try {
-    // Filter notifications for admins
-    const adminNotifications = notifications.filter(n => 
-      n.audience === 'admin' || n.audience === 'all'
-    );
+    // Get all notifications (admins can see all)
+    const notifications = await Notification.find()
+      .sort({ createdAt: -1 })
+      .limit(50)
+      .populate('createdBy', 'email username');
 
     res.json({
       success: true,
-      data: adminNotifications
+      data: notifications,
+      count: notifications.length
     });
   } catch (error) {
     console.error('[NOTIFICATION] Get admin notifications error:', error);
     res.status(500).json({
       success: false,
-      message: 'Error fetching notifications'
+      message: 'Error fetching notifications',
+      error: error.message
     });
   }
 };
 
 /**
  * Create and Broadcast Notification
+ * Admin creates notification for farmers
  */
 const createNotification = async (req, res) => {
   try {
-    const { title, message, type, audience } = req.body;
+    const { 
+      title, 
+      message, 
+      type, 
+      priority,
+      targetAudience,
+      targetLocations,
+      targetCrops,
+      icon,
+      expiryDate
+    } = req.body;
 
     // Validate required fields
-    if (!title || !message || !audience) {
+    if (!title || !message) {
       return res.status(400).json({
         success: false,
-        message: 'Title, message, and audience are required'
+        message: 'Title and message are required'
       });
     }
 
     // Create new notification
-    const newNotification = {
-      _id: Date.now().toString(),
+    const newNotification = new Notification({
       title,
       message,
       type: type || 'info',
-      audience, // 'farmer', 'admin', or 'all'
-      isRead: false,
-      createdAt: new Date()
-    };
+      priority: priority || 'medium',
+      targetAudience: targetAudience || 'all',
+      targetLocations: targetLocations || [],
+      targetCrops: targetCrops || [],
+      icon: icon || '📢',
+      expiryDate: expiryDate ? new Date(expiryDate) : null,
+      isActive: true,
+      createdBy: req.admin?._id
+    });
 
-    // Add to notifications array
-    notifications.unshift(newNotification);
+    await newNotification.save();
 
-    // Keep only last 100 notifications
-    if (notifications.length > 100) {
-      notifications = notifications.slice(0, 100);
+    console.log('[NOTIFICATION] Created:', {
+      id: newNotification._id,
+      title: newNotification.title,
+      targetAudience: newNotification.targetAudience
+    });
+
+    // Count target farmers
+    let targetCount = 0;
+    if (targetAudience === 'all') {
+      targetCount = await Farmer.countDocuments({ status: 'approved' });
+    } else if (targetAudience === 'approved') {
+      targetCount = await Farmer.countDocuments({ status: 'approved' });
+    } else if (targetAudience === 'pending') {
+      targetCount = await Farmer.countDocuments({ status: 'pending' });
+    } else if (targetAudience === 'location' && targetLocations && targetLocations.length > 0) {
+      const locationRegex = targetLocations.map(loc => new RegExp(loc, 'i'));
+      targetCount = await Farmer.countDocuments({ 
+        status: 'approved',
+        location: { $in: locationRegex }
+      });
+    } else if (targetAudience === 'crop' && targetCrops && targetCrops.length > 0) {
+      const cropRegex = targetCrops.map(crop => new RegExp(crop, 'i'));
+      targetCount = await Farmer.countDocuments({ 
+        status: 'approved',
+        cropType: { $in: cropRegex }
+      });
     }
-
-    console.log('[NOTIFICATION] Created:', newNotification);
 
     res.json({
       success: true,
-      message: 'Notification created successfully',
-      data: newNotification
+      message: 'Notification created and broadcast successfully',
+      data: newNotification,
+      targetFarmersCount: targetCount
     });
   } catch (error) {
     console.error('[NOTIFICATION] Create notification error:', error);
     res.status(500).json({
       success: false,
-      message: 'Error creating notification'
+      message: 'Error creating notification',
+      error: error.message
+    });
+  }
+};
+
+/**
+ * Delete Notification
+ */
+const deleteNotification = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const notification = await Notification.findByIdAndDelete(id);
+
+    if (!notification) {
+      return res.status(404).json({
+        success: false,
+        message: 'Notification not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Notification deleted successfully'
+    });
+  } catch (error) {
+    console.error('[NOTIFICATION] Delete notification error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error deleting notification',
+      error: error.message
     });
   }
 };
@@ -149,5 +253,6 @@ module.exports = {
   getFarmerNotifications,
   markAsRead,
   getAdminNotifications,
-  createNotification
+  createNotification,
+  deleteNotification
 };

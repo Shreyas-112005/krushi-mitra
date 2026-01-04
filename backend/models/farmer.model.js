@@ -36,31 +36,25 @@ const farmerSchema = new mongoose.Schema({
   cropType: {
     type: String,
     required: [true, 'Primary crop type is required'],
-    enum: ['rice', 'wheat', 'vegetables', 'fruits', 'pulses', 'sugarcane', 'cotton', 'other']
+    enum: ['rice', 'wheat', 'vegetables', 'fruits', 'pulses', 'sugarcane', 'cotton', 'spices', 'other']
   },
   language: {
     type: String,
     default: 'english',
-    enum: ['english', 'kannada', 'hindi']
+    enum: ['english', 'kannada', 'hindi', 'en', 'kn', 'hi']
   },
-  status: {
-    type: String,
-    enum: ['pending', 'approved', 'rejected', 'suspended'],
-    default: 'pending'
+  // REMOVED: Admin approval system
+  // Farmers now login directly using OTP
+  isVerified: {
+    type: Boolean,
+    default: false  // Email verified via OTP
   },
   registeredAt: {
     type: Date,
     default: Date.now
   },
-  approvedAt: {
+  lastOTPRequestedAt: {
     type: Date
-  },
-  approvedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Admin'
-  },
-  rejectionReason: {
-    type: String
   },
   lastLogin: {
     type: Date
@@ -142,9 +136,7 @@ farmerSchema.virtual('fullAddress').get(function() {
   return `${this.location}, Karnataka, India`;
 });
 
-// Index for faster queries
-farmerSchema.index({ email: 1 });
-farmerSchema.index({ mobile: 1 });
+// Additional indexes (email and mobile already indexed via unique:true)
 farmerSchema.index({ status: 1 });
 farmerSchema.index({ registeredAt: -1 });
 

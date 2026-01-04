@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 CRITICAL BUG FIX - Farmer Approval Testing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #d32f2f;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .card h2 {
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            font-size: 20px;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-success {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #45a049;
+        }
+        
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #da190b;
+        }
+        
+        .btn-warning {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #e68900;
+        }
+        
+        .status-box {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffc107;
+        }
+        
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+        
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+        
+        .log-container {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            max-height: 600px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+        }
+        
+        .log-success {
+            color: #4caf50;
+        }
+        
+        .log-error {
+            color: #f44336;
+        }
+        
+        .log-warning {
+            color: #ff9800;
+        }
+        
+        .log-info {
+            color: #2196f3;
+        }
+        
+        .farmer-info {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .farmer-info p {
+            margin: 5px 0;
+            color: #333;
+        }
+        
+        .farmer-info strong {
+            color: #667eea;
+        }
+        
+        .critical-warning {
+            background: #ffebee;
+            border: 3px solid #d32f2f;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .critical-warning h3 {
+            color: #d32f2f;
+            margin-bottom: 10px;
+        }
+        
+        .critical-warning ul {
+            margin-left: 20px;
+            color: #333;
+        }
+        
+        .critical-warning li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐛 CRITICAL BUG FIX - Farmer Approval System</h1>
+            <p>Complete End-to-End Testing with Database Verification</p>
+        </div>
+
+        <div class="critical-warning">
+            <h3>⚠️ CRITICAL BUG BEING FIXED:</h3>
+            <ul>
+                <li>✅ Buttons DO respond (frontend works)</li>
+                <li>❌ Database value DOES NOT update (backend issue)</li>
+                <li>❌ Farmer login STILL says "Waiting for Admin Approval"</li>
+                <li>🔧 This test page will PROVE where the bug is happening</li>
+            </ul>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h2>Step 1: Admin Login</h2>
+                <button class="btn btn-primary" onclick="adminLogin()">
+                    🔐 Login as Admin
+                </button>
+                <div id="adminStatus" class="status-box status-pending" style="display: none;">
+                    Waiting...
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Step 2: Fetch Farmers</h2>
+                <button class="btn btn-primary" onclick="fetchFarmers()" id="fetchBtn" disabled>
+                    📋 Fetch Pending Farmers
+                </button>
+                <div id="farmerCount" style="margin-top: 10px; font-weight: bold;"></div>
+            </div>
+
+            <div class="card">
+                <h2>Step 3: Approve Farmer</h2>
+                <button class="btn btn-success" onclick="approveFarmer()" id="approveBtn" disabled>
+                    ✅ APPROVE FARMER
+                </button>
+                <div id="approveStatus" class="status-box status-pending" style="display: none;">
+                    Waiting...
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Step 4: Verify Database</h2>
+                <button class="btn btn-warning" onclick="verifyDatabase()" id="verifyBtn" disabled>
+                    🔍 Check Database Status
+                </button>
+                <div id="dbStatus" class="status-box status-pending" style="display: none;">
+                    Waiting...
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Step 5: Test Farmer Login</h2>
+                <button class="btn btn-success" onclick="testFarmerLogin()" id="loginBtn" disabled>
+                    🔑 Test Farmer Login
+                </button>
+                <div id="loginStatus" class="status-box status-pending" style="display: none;">
+                    Waiting...
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Quick Actions</h2>
+                <button class="btn btn-danger" onclick="clearLogs()">
+                    🗑️ Clear Logs
+                </button>
+                <button class="btn btn-warning" onclick="runFullTest()" id="fullTestBtn">
+                    🚀 Run Full Test (All Steps)
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📊 Farmer Information</h2>
+            <div id="farmerInfo" class="farmer-info">
+                <p>No farmer data loaded yet. Click "Fetch Pending Farmers" first.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📝 Real-Time Debug Log</h2>
+            <div id="logContainer" class="log-container">
+                <div class="log-entry log-info">🔧 Debug console initialized. Ready to test farmer approval bug fix.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let adminToken = null;
+        let currentFarmer = null;
+
+        function log(message, type = 'info') {
+            const logContainer = document.getElementById('logContainer');
+            const timestamp = new Date().toLocaleTimeString();
+            const colors = {
+                success: 'log-success',
+                error: 'log-error',
+                warning: 'log-warning',
+                info: 'log-info'
+            };
+            
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${colors[type]}`;
+            entry.textContent = `[${timestamp}] ${message}`;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function updateStatus(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.textContent = message;
+            element.className = `status-box status-${type}`;
+        }
+
+        function clearLogs() {
+            document.getElementById('logContainer').innerHTML = '<div class="log-entry log-info">🔧 Debug console cleared.</div>';
+        }
+
+        async function adminLogin() {
+            try {
+                log('🔐 Step 1: Logging in as admin...', 'info');
+                updateStatus('adminStatus', 'Logging in...', 'pending');
+
+                const response = await fetch(`${API_URL}/admin/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'admin@krushimithra.com',
+                        password: 'Admin@12345'
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    adminToken = data.token;
+                    log('✅ Admin login successful!', 'success');
+                    log(`👤 Logged in as: ${data.admin.email}`, 'success');
+                    updateStatus('adminStatus', '✅ Logged In', 'approved');
+                    document.getElementById('fetchBtn').disabled = false;
+                    return true;
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                log(`❌ Admin login failed: ${error.message}`, 'error');
+                updateStatus('adminStatus', '❌ Login Failed', 'error');
+                return false;
+            }
+        }
+
+        async function fetchFarmers() {
+            try {
+                log('📋 Step 2: Fetching pending farmers from database...', 'info');
+
+                const response = await fetch(`${API_URL}/admin/farmers?status=pending`, {
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+
+                const data = await response.json();
+                
+                if (data.success && data.farmers && data.farmers.length > 0) {
+                    currentFarmer = data.farmers[0];
+                    log(`✅ Found ${data.farmers.length} pending farmer(s)`, 'success');
+                    log(`👤 First farmer: ${currentFarmer.email}`, 'info');
+                    log(`📍 ID: ${currentFarmer._id}`, 'info');
+                    log(`📊 Current status: ${currentFarmer.status}`, 'warning');
+                    
+                    document.getElementById('farmerCount').textContent = `✅ Found: ${data.farmers.length} farmer(s)`;
+                    document.getElementById('farmerCount').style.color = '#4caf50';
+                    
+                    // Display farmer info
+                    const farmerInfo = document.getElementById('farmerInfo');
+                    farmerInfo.innerHTML = `
+                        <p><strong>Full Name:</strong> ${currentFarmer.fullName || 'N/A'}</p>
+                        <p><strong>Email:</strong> ${currentFarmer.email}</p>
+                        <p><strong>Mobile:</strong> ${currentFarmer.mobile || 'N/A'}</p>
+                        <p><strong>Location:</strong> ${currentFarmer.location || 'N/A'}</p>
+                        <p><strong>Crop Type:</strong> ${currentFarmer.cropType || 'N/A'}</p>
+                        <p><strong>Current Status:</strong> <span style="color: #ff9800; font-weight: bold;">${currentFarmer.status}</span></p>
+                        <p><strong>Farmer ID:</strong> ${currentFarmer._id}</p>
+                    `;
+                    
+                    document.getElementById('approveBtn').disabled = false;
+                    return true;
+                } else {
+                    log('⚠️  No pending farmers found', 'warning');
+                    document.getElementById('farmerCount').textContent = '⚠️  No pending farmers';
+                    document.getElementById('farmerCount').style.color = '#ff9800';
+                    
+                    document.getElementById('farmerInfo').innerHTML = '<p>No pending farmers found. Register a new farmer first.</p>';
+                    return false;
+                }
+            } catch (error) {
+                log(`❌ Failed to fetch farmers: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        async function approveFarmer() {
+            if (!currentFarmer) {
+                log('❌ No farmer selected. Fetch farmers first.', 'error');
+                return;
+            }
+
+            try {
+                log('═══════════════════════════════════════', 'info');
+                log('🚀 Step 3: APPROVING FARMER - CRITICAL TEST', 'warning');
+                log(`📍 Farmer ID: ${currentFarmer._id}`, 'info');
+                log(`📧 Email: ${currentFarmer.email}`, 'info');
+                log(`📊 Current Status: ${currentFarmer.status}`, 'info');
+                updateStatus('approveStatus', 'Sending approval request...', 'pending');
+
+                const startTime = Date.now();
+                const response = await fetch(`${API_URL}/admin/farmers/${currentFarmer._id}/approve`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${adminToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const endTime = Date.now();
+                const data = await response.json();
+                
+                log(`⏱️  Response time: ${endTime - startTime}ms`, 'info');
+                log(`📥 Response status: ${response.status}`, 'info');
+                log(`📦 Response data: ${JSON.stringify(data, null, 2)}`, 'info');
+
+                if (data.success) {
+                    log('✅ Approval API call successful!', 'success');
+                    log(`📊 Returned status: ${data.farmer.status}`, 'success');
+                    updateStatus('approveStatus', '✅ API Call Successful', 'approved');
+                    
+                    // Update local farmer object
+                    currentFarmer = data.farmer;
+                    
+                    // Update farmer info display
+                    const farmerInfo = document.getElementById('farmerInfo');
+                    const statusColor = data.farmer.status === 'approved' ? '#4caf50' : '#ff9800';
+                    farmerInfo.innerHTML = `
+                        <p><strong>Full Name:</strong> ${currentFarmer.fullName || 'N/A'}</p>
+                        <p><strong>Email:</strong> ${currentFarmer.email}</p>
+                        <p><strong>Mobile:</strong> ${currentFarmer.mobile || 'N/A'}</p>
+                        <p><strong>Location:</strong> ${currentFarmer.location || 'N/A'}</p>
+                        <p><strong>Crop Type:</strong> ${currentFarmer.cropType || 'N/A'}</p>
+                        <p><strong>Current Status:</strong> <span style="color: ${statusColor}; font-weight: bold; font-size: 18px;">${currentFarmer.status}</span></p>
+                        <p><strong>Approved At:</strong> ${currentFarmer.approvedAt || 'N/A'}</p>
+                        <p><strong>Farmer ID:</strong> ${currentFarmer._id}</p>
+                    `;
+                    
+                    log('═══════════════════════════════════════', 'info');
+                    log('⚠️  NOW THE CRITICAL QUESTION:', 'warning');
+                    log('🔍 Did the database ACTUALLY update?', 'warning');
+                    log('📌 Next: Click "Check Database Status" to verify!', 'warning');
+                    log('═══════════════════════════════════════', 'info');
+                    
+                    document.getElementById('verifyBtn').disabled = false;
+                    return true;
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                log(`❌ Approval failed: ${error.message}`, 'error');
+                updateStatus('approveStatus', '❌ Failed', 'error');
+                return false;
+            }
+        }
+
+        async function verifyDatabase() {
+            if (!currentFarmer) {
+                log('❌ No farmer to verify. Complete steps 1-3 first.', 'error');
+                return;
+            }
+
+            try {
+                log('═══════════════════════════════════════', 'info');
+                log('🔍 Step 4: VERIFYING DATABASE - CRITICAL MOMENT', 'warning');
+                log('📌 This will fetch the farmer DIRECTLY from MongoDB', 'info');
+                log('📌 This proves if the database actually updated', 'info');
+                updateStatus('dbStatus', 'Querying database...', 'pending');
+
+                const response = await fetch(`${API_URL}/admin/farmers/${currentFarmer._id}/debug`, {
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+
+                const data = await response.json();
+                
+                log('═══════════════════════════════════════', 'info');
+                log('📊 DATABASE VERIFICATION RESULTS:', 'warning');
+                log(`✅ Farmer found in database: ${data.success}`, data.success ? 'success' : 'error');
+                
+                if (data.success) {
+                    log(`📧 Email: ${data.farmer.email}`, 'info');
+                    log(`📊 Database Status: ${data.rawStatus}`, data.rawStatus === 'approved' ? 'success' : 'error');
+                    log(`🔍 Status Type: ${data.statusType}`, 'info');
+                    log(`✅ Is Approved: ${data.isApproved}`, data.isApproved ? 'success' : 'error');
+                    log(`⏳ Is Pending: ${data.isPending}`, data.isPending ? 'warning' : 'success');
+                    log(`📅 Approved At: ${data.farmer.approvedAt || 'NOT SET'}`, data.farmer.approvedAt ? 'success' : 'error');
+                    log(`👤 Approved By: ${data.farmer.approvedBy || 'NOT SET'}`, data.farmer.approvedBy ? 'success' : 'error');
+                    
+                    log('═══════════════════════════════════════', 'info');
+                    
+                    if (data.rawStatus === 'approved') {
+                        log('✅✅✅ SUCCESS! Database IS updated to APPROVED!', 'success');
+                        log('📌 The bug might be in farmer login checking wrong field', 'warning');
+                        updateStatus('dbStatus', '✅ Database APPROVED', 'approved');
+                        document.getElementById('loginBtn').disabled = false;
+                    } else {
+                        log('❌❌❌ CRITICAL BUG CONFIRMED!', 'error');
+                        log('❌ Database status is STILL: ' + data.rawStatus, 'error');
+                        log('❌ The API says success but database did NOT update!', 'error');
+                        updateStatus('dbStatus', '❌ Database NOT Updated', 'error');
+                    }
+                    
+                    log('═══════════════════════════════════════', 'info');
+                    return data.rawStatus === 'approved';
+                } else {
+                    log('❌ Farmer not found in database', 'error');
+                    updateStatus('dbStatus', '❌ Not Found', 'error');
+                    return false;
+                }
+            } catch (error) {
+                log(`❌ Database verification failed: ${error.message}`, 'error');
+                updateStatus('dbStatus', '❌ Verification Failed', 'error');
+                return false;
+            }
+        }
+
+        async function testFarmerLogin() {
+            if (!currentFarmer) {
+                log('❌ No farmer to test. Complete steps 1-4 first.', 'error');
+                return;
+            }
+
+            try {
+                log('═══════════════════════════════════════', 'info');
+                log('🔑 Step 5: TESTING FARMER LOGIN - FINAL TEST', 'warning');
+                log(`📧 Attempting login as: ${currentFarmer.email}`, 'info');
+                updateStatus('loginStatus', 'Testing login...', 'pending');
+
+                // Note: This assumes the farmer's password. You'll need to know it or create a test farmer with known password.
+                const testPassword = prompt(`Enter password for ${currentFarmer.email}:`, 'Farmer@123');
+                
+                if (!testPassword) {
+                    log('❌ Login test cancelled', 'warning');
+                    return;
+                }
+
+                const response = await fetch(`${API_URL}/farmers/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: currentFarmer.email,
+                        password: testPassword
+                    })
+                });
+
+                const data = await response.json();
+                
+                log('═══════════════════════════════════════', 'info');
+                log('🔑 FARMER LOGIN TEST RESULTS:', 'warning');
+                log(`📊 Response status: ${response.status}`, 'info');
+                log(`✅ Login success: ${data.success}`, data.success ? 'success' : 'error');
+                log(`📝 Message: ${data.message}`, data.success ? 'success' : 'error');
+                
+                if (data.success) {
+                    log('✅✅✅ FARMER LOGIN SUCCESSFUL!', 'success');
+                    log('✅ The bug is FIXED! Farmer can now login!', 'success');
+                    log(`👤 Logged in as: ${data.farmer.fullName}`, 'success');
+                    log(`🎫 Token received: ${data.token.substring(0, 20)}...`, 'success');
+                    updateStatus('loginStatus', '✅ Login Successful!', 'approved');
+                    
+                    log('═══════════════════════════════════════', 'info');
+                    log('🎉 END-TO-END TEST PASSED!', 'success');
+                    log('✅ Approval works', 'success');
+                    log('✅ Database updates', 'success');
+                    log('✅ Farmer can login', 'success');
+                    log('═══════════════════════════════════════', 'info');
+                } else {
+                    log('❌❌❌ FARMER LOGIN FAILED!', 'error');
+                    log(`❌ Error: ${data.message}`, 'error');
+                    log(`📊 Status returned: ${data.status}`, 'error');
+                    
+                    if (data.status === 'PENDING') {
+                        log('❌ CRITICAL BUG STILL EXISTS!', 'error');
+                        log('❌ Farmer status is still PENDING in database', 'error');
+                        log('❌ OR farmer login is checking wrong field/collection', 'error');
+                    }
+                    
+                    updateStatus('loginStatus', '❌ Login Failed', 'error');
+                }
+                
+                log('═══════════════════════════════════════', 'info');
+                
+            } catch (error) {
+                log(`❌ Login test failed: ${error.message}`, 'error');
+                updateStatus('loginStatus', '❌ Test Failed', 'error');
+            }
+        }
+
+        async function runFullTest() {
+            log('═══════════════════════════════════════', 'info');
+            log('🚀 RUNNING FULL END-TO-END TEST', 'warning');
+            log('═══════════════════════════════════════', 'info');
+            
+            document.getElementById('fullTestBtn').disabled = true;
+            
+            const step1 = await adminLogin();
+            if (!step1) {
+                log('❌ Full test failed at step 1', 'error');
+                document.getElementById('fullTestBtn').disabled = false;
+                return;
+            }
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const step2 = await fetchFarmers();
+            if (!step2) {
+                log('❌ Full test failed at step 2', 'error');
+                document.getElementById('fullTestBtn').disabled = false;
+                return;
+            }
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const step3 = await approveFarmer();
+            if (!step3) {
+                log('❌ Full test failed at step 3', 'error');
+                document.getElementById('fullTestBtn').disabled = false;
+                return;
+            }
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const step4 = await verifyDatabase();
+            if (!step4) {
+                log('❌ Full test failed at step 4', 'error');
+                document.getElementById('fullTestBtn').disabled = false;
+                return;
+            }
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            await testFarmerLogin();
+            
+            document.getElementById('fullTestBtn').disabled = false;
+            
+            log('═══════════════════════════════════════', 'info');
+            log('✅ FULL TEST SEQUENCE COMPLETED', 'success');
+            log('═══════════════════════════════════════', 'info');
+        }
+
+        // Show instructions on load
+        window.addEventListener('load', () => {
+            log('═══════════════════════════════════════', 'info');
+            log('📚 INSTRUCTIONS:', 'info');
+            log('1. Click "Login as Admin" to authenticate', 'info');
+            log('2. Click "Fetch Pending Farmers" to load farmers', 'info');
+            log('3. Click "APPROVE FARMER" to update status', 'info');
+            log('4. Click "Check Database Status" to verify database', 'info');
+            log('5. Click "Test Farmer Login" to confirm fix', 'info');
+            log('', 'info');
+            log('OR click "Run Full Test" to execute all steps automatically', 'info');
+            log('═══════════════════════════════════════', 'info');
+        });
+    </script>
+</body>
+</html>

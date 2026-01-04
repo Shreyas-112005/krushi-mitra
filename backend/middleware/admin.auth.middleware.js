@@ -59,8 +59,10 @@ const verifyMainAdmin = async (req, res, next) => {
   try {
     // First verify token
     await verifyToken(req, res, async () => {
-      // Check if user has MAIN_ADMIN role
-      if (req.user.role !== 'MAIN_ADMIN') {
+      // Check if user has MAIN_ADMIN or super_admin role
+      const validRoles = ['MAIN_ADMIN', 'super_admin', 'superadmin'];
+      if (!validRoles.includes(req.user.role)) {
+        console.log('[AUTH] Access denied - Invalid role:', req.user.role);
         return res.status(403).json({
           success: false,
           message: 'Access denied: Only main admin allowed'
@@ -68,14 +70,15 @@ const verifyMainAdmin = async (req, res, next) => {
       }
 
       // Check if using JSON storage mode
-      if (process.env.USE_JSON_STORAGE === 'true' || !process.env.MONGODB_URI) {
+      if (process.env.USE_JSON_STORAGE === 'true') {
         // In JSON storage mode, skip database check
         req.admin = {
           _id: req.user.id,
           email: req.user.email,
-          role: 'MAIN_ADMIN',
+          role: req.user.role,
           isActive: true
         };
+        console.log('[AUTH] JSON mode - Admin verified:', req.user.email);
         return next();
       }
 
@@ -83,6 +86,7 @@ const verifyMainAdmin = async (req, res, next) => {
       const admin = await Admin.findById(req.user.id).select('-password');
       
       if (!admin) {
+        console.log('[AUTH] Admin not found in database:', req.user.id);
         return res.status(404).json({
           success: false,
           message: 'Admin not found'
@@ -90,14 +94,15 @@ const verifyMainAdmin = async (req, res, next) => {
       }
 
       if (!admin.isActive) {
+        console.log('[AUTH] Admin account inactive:', admin.email);
         return res.status(403).json({
           success: false,
           message: 'Admin account is inactive'
         });
       }
 
-      // Verify role is still MAIN_ADMIN (extra security)
-      if (admin.role !== 'MAIN_ADMIN') {
+      // Verify role is still valid (extra security)
+      if (!validRoles.includes(admin.role)) {
         return res.status(403).json({
           success: false,
           message: 'Access denied: Only main admin allowed'

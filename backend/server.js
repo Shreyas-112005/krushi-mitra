@@ -75,8 +75,6 @@ let isDbConnected = false;
 // Only connect to MongoDB if MONGODB_URI is set
 if (process.env.MONGODB_URI) {
   mongoose.connect(dbConfig.url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
     serverSelectionTimeoutMS: 5000 // Fail fast if MongoDB is not available
   })
   .then(() => {

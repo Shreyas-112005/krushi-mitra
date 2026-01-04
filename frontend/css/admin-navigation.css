@@ -1,0 +1,255 @@
+/**
+ * Admin Dashboard Navigation Styles
+ * Smooth transitions and section management
+ */
+
+/* Section transitions */
+.section-content {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Active nav link styling */
+.nav-menu a.nav-link {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.nav-menu a.nav-link:hover {
+    color: #4caf50;
+    transform: translateY(-2px);
+}
+
+.nav-menu a.nav-link.active {
+    color: #4caf50;
+    font-weight: 600;
+}
+
+.nav-menu a.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #4caf50, #81c784);
+    border-radius: 2px;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+/* User menu dropdown */
+.user-menu {
+    position: relative;
+}
+
+.user-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.user-btn:hover {
+    border-color: #4caf50;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+}
+
+.user-avatar {
+    font-size: 1.5rem;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 150px;
+    display: none;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.user-dropdown.show {
+    display: block;
+    animation: dropdownSlide 0.2s ease-out;
+}
+
+@keyframes dropdownSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* User section with logout button */
+.user-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.btn-logout-nav {
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.btn-logout-nav:hover {
+    background: linear-gradient(135deg, #d32f2f, #c62828);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+}
+
+.btn-logout-nav:active {
+    transform: translateY(0);
+}
+
+.user-dropdown {
+    animation: dropdownFadeIn 0.2s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.user-dropdown a {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.user-dropdown a:last-child {
+    border-bottom: none;
+}
+
+.user-dropdown a:hover {
+    background: #f5f5f5;
+    color: #4caf50;
+    padding-left: 1.25rem;
+}
+
+.user-dropdown a#logoutBtn {
+    color: #f44336;
+    font-weight: 600;
+}
+
+.user-dropdown a#logoutBtn:hover {
+    background: #ffebee;
+    color: #c62828;
+}
+
+/* Section loading state */
+.section-content.loading::before {
+    content: '⏳ Loading...';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+/* Smooth scrolling for the entire page */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Hide sections by default except dashboard */
+.section-content:not(#section-dashboard) {
+    display: none;
+}
+
+/* Dashboard header responsiveness */
+.dashboard-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Prevent layout shift during navigation */
+.dashboard-main {
+    min-height: calc(100vh - 80px);
+}
+
+/* Market stats table styling */
+.market-stats-summary {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.stat-box {
+    flex: 1;
+    min-width: 150px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.stat-text {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}

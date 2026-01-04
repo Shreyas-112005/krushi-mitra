@@ -6,6 +6,7 @@
     <title>Admin Dashboard - KRUSHI MITHRA</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/admin-dashboard.css">
+    <link rel="stylesheet" href="../css/admin-navigation.css">
 </head>
 <body>
     <!-- Navigation Header -->
@@ -17,13 +18,17 @@
                 </div>
                 <nav class="nav-menu">
                     <ul>
-                        <li><a href="#dashboard" class="active">Dashboard</a></li>
-                        <li><a href="#farmers">Farmers</a></li>
-                        <li><a href="#market">Market Prices</a></li>
-                        <li><a href="#subsidies">Subsidies</a></li>
+                        <li><a href="#dashboard" class="nav-link active" data-section="dashboard">Dashboard</a></li>
+                        <li><a href="#farmers" class="nav-link" data-section="farmers">Farmers</a></li>
+                        <li><a href="#market" class="nav-link" data-section="market">Market Prices</a></li>
+                        <li><a href="#subsidies" class="nav-link" data-section="subsidies">Subsidies</a></li>
+                        <li><a href="#notifications" class="nav-link" data-section="notifications">Notifications</a></li>
                     </ul>
                 </nav>
                 <div class="user-section">
+                    <button class="btn btn-logout-nav" id="logoutBtnNav" title="Logout">
+                        <span>🚪 Logout</span>
+                    </button>
                     <div class="user-menu">
                         <button class="user-btn" id="userMenuBtn">
                             <span class="user-avatar">👨‍💼</span>
@@ -44,7 +49,7 @@
     <main class="dashboard-main">
         <div class="container">
             <!-- Stats Overview -->
-            <section class="stats-section">
+            <section class="stats-section section-content" id="section-dashboard" data-section="dashboard">
                 <h2 class="section-title">Dashboard Overview</h2>
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -55,17 +60,10 @@
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">⏳</div>
-                        <div class="stat-info">
-                            <div class="stat-value" id="pendingApprovals">0</div>
-                            <div class="stat-label">Pending Approvals</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
                         <div class="stat-icon">✅</div>
                         <div class="stat-info">
-                            <div class="stat-value" id="approvedFarmers">0</div>
-                            <div class="stat-label">Approved</div>
+                            <div class="stat-value" id="verifiedFarmers">0</div>
+                            <div class="stat-label">Verified Farmers</div>
                         </div>
                     </div>
                     <div class="stat-card">
@@ -78,11 +76,14 @@
                 </div>
             </section>
 
-            <!-- Pending Farmer Approvals -->
-            <section class="farmers-section">
+            <!-- Registered Farmers -->
+            <section class="farmers-section section-content" id="section-farmers" data-section="farmers" style="display:none;">
                 <div class="section-header">
-                    <h2 class="section-title">Pending Farmer Approvals</h2>
-                    <button class="btn-refresh" id="refreshBtn">🔄 Refresh</button>
+                    <h2 class="section-title">Registered Farmers</h2>
+                    <div>
+                        <input type="text" id="farmerSearchInput" placeholder="🔍 Search farmers..." style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 5px; margin-right: 10px; width: 250px;">
+                        <button class="btn-refresh" id="refreshBtn">🔄 Refresh</button>
+                    </div>
                 </div>
                 <div class="farmers-list" id="farmersList">
                     <div class="loading">Loading farmers...</div>
@@ -90,10 +91,13 @@
             </section>
 
             <!-- Market Price Management -->
-            <section class="market-section">
+            <section class="market-section section-content" id="section-market" data-section="market" style="display:none;">
                 <div class="section-header">
                     <h2 class="section-title">Market Price Management</h2>
-                    <button class="btn-primary" id="updatePricesBtn">Update Prices</button>
+                    <div>
+                        <button class="btn-primary" id="addPriceBtn" style="margin-right: 10px;">➕ Add Price</button>
+                        <button class="btn-secondary" id="updatePricesBtn">🔄 Update All</button>
+                    </div>
                 </div>
                 <div class="market-stats" id="marketStats">
                     <p>Loading market data...</p>
@@ -101,7 +105,7 @@
             </section>
 
             <!-- Subsidy Management -->
-            <section class="subsidy-section" id="subsidySection">
+            <section class="subsidy-section section-content" id="section-subsidies" data-section="subsidies" style="display:none;">
                 <div class="section-header">
                     <h2 class="section-title">Government Subsidy Management</h2>
                     <button class="btn-primary" id="addSubsidyBtn">➕ Add New Subsidy</button>
@@ -219,8 +223,68 @@
                 </div>
             </div>
 
+            <!-- Market Price Form Modal (Hidden) -->
+            <div class="modal" id="priceModal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="priceModalTitle">Add New Market Price</h3>
+                        <button class="close-btn" id="closePriceModal">×</button>
+                    </div>
+                    <form id="priceForm" class="price-form">
+                        <input type="hidden" id="priceId">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="priceVegetableName">Vegetable/Fruit Name *</label>
+                                <input type="text" id="priceVegetableName" placeholder="e.g., Tomato, Potato" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="priceAmount">Price (₹) *</label>
+                                <input type="number" id="priceAmount" required min="0" step="0.01">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="priceUnit">Unit *</label>
+                                <select id="priceUnit" required>
+                                    <option value="kg">Kilogram (kg)</option>
+                                    <option value="quintal">Quintal</option>
+                                    <option value="ton">Ton</option>
+                                    <option value="piece">Piece</option>
+                                    <option value="dozen">Dozen</option>
+                                    <option value="liter">Liter</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="priceMarket">Market *</label>
+                                <input type="text" id="priceMarket" placeholder="e.g., APMC Bangalore" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="priceCategory">Category *</label>
+                                <select id="priceCategory" required>
+                                    <option value="vegetable">Vegetable</option>
+                                    <option value="fruit">Fruit</option>
+                                    <option value="grain">Grain</option>
+                                    <option value="spice">Spice</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="priceState">State</label>
+                                <input type="text" id="priceState" value="Karnataka" placeholder="State name">
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn-secondary" id="cancelPriceBtn">Cancel</button>
+                            <button type="submit" class="btn-primary">Save Price</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             <!-- Send Notification -->
-            <section class="notification-section">
+            <section class="notification-section section-content" id="section-notifications" data-section="notifications" style="display:none;">
                 <div class="section-header">
                     <h2 class="section-title">📢 Send Notification to Farmers</h2>
                     <button class="btn-secondary" id="viewNotificationsBtn">View All Notifications</button>
@@ -306,6 +370,16 @@
         </div>
     </main>
 
-    <script src="../js/admin-dashboard.js"></script>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
+        <div style="background: white; padding: 2rem; border-radius: 10px; text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">⏳</div>
+            <div style="font-size: 1.2rem; color: #333;">Loading Dashboard...</div>
+        </div>
+    </div>
+
+    <!-- Toast Notification (will be created by JS if needed) -->
+
+    <script src="../js/admin-dashboard-optimized.js"></script>
 </body>
 </html>

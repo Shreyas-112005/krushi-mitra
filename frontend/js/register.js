@@ -1,329 +1,282 @@
 // API Configuration
 const API_URL = 'http://localhost:3000/api';
 
+// Registration state
+let registrationData = {};
+let otpSent = false;
+
 // DOM Elements
 const form = document.getElementById('registrationForm');
 const submitBtn = document.getElementById('submitBtn');
 const formMessage = document.getElementById('formMessage');
-const togglePasswordBtn = document.getElementById('togglePassword');
 
-// Form Fields
-const formFields = {
-    fullName: document.getElementById('fullName'),
-    email: document.getElementById('email'),
-    mobile: document.getElementById('mobile'),
-    password: document.getElementById('password'),
-    confirmPassword: document.getElementById('confirmPassword'),
-    location: document.getElementById('location'),
-    cropType: document.getElementById('cropType'),
-    language: document.getElementById('language'),
-    terms: document.getElementById('terms')
-};
-
-// Error Message Elements
-const errorElements = {
-    fullName: document.getElementById('fullNameError'),
-    email: document.getElementById('emailError'),
-    mobile: document.getElementById('mobileError'),
-    password: document.getElementById('passwordError'),
-    confirmPassword: document.getElementById('confirmPasswordError'),
-    location: document.getElementById('locationError'),
-    cropType: document.getElementById('cropTypeError'),
-    language: document.getElementById('languageError'),
-    terms: document.getElementById('termsError')
-};
-
-// Validation Rules
-const validationRules = {
-    fullName: {
-        required: true,
-        minLength: 3,
-        pattern: /^[a-zA-Z\s]+$/,
-        message: 'Please enter a valid name (letters only, minimum 3 characters)'
-    },
-    email: {
-        required: true,
-        pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-        message: 'Please enter a valid email address'
-    },
-    mobile: {
-        required: true,
-        pattern: /^[6-9]\d{9}$/,
-        message: 'Please enter a valid 10-digit mobile number starting with 6-9'
-    },
-    password: {
-        required: true,
-        minLength: 8,
-        pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
-        message: 'Password must be at least 8 characters with uppercase, lowercase, and number'
-    },
-    confirmPassword: {
-        required: true,
-        match: 'password',
-        message: 'Passwords do not match'
-    },
-    location: {
-        required: true,
-        minLength: 3,
-        message: 'Please enter your location'
-    },
-    cropType: {
-        required: true,
-        message: 'Please select your primary crop type'
-    },
-    language: {
-        required: true,
-        message: 'Please select your preferred language'
-    },
-    terms: {
-        required: true,
-        message: 'You must agree to the terms and conditions'
-    }
-};
-
-// Initialize Event Listeners
+// Wait for DOM to load
 document.addEventListener('DOMContentLoaded', () => {
-    initializeValidation();
-    setupPasswordToggle();
     setupFormSubmission();
+    setupPasswordValidation();
 });
-
-// Initialize Real-time Validation
-function initializeValidation() {
-    Object.keys(formFields).forEach(fieldName => {
-        const field = formFields[fieldName];
-        
-        if (field.type === 'checkbox') {
-            field.addEventListener('change', () => validateField(fieldName));
-        } else {
-            // Validate on blur
-            field.addEventListener('blur', () => validateField(fieldName));
-            
-            // Clear error on input
-            field.addEventListener('input', () => {
-                if (field.classList.contains('error')) {
-                    clearError(fieldName);
-                }
-            });
-        }
-    });
-
-    // Special handling for mobile number - only allow digits
-    formFields.mobile.addEventListener('input', (e) => {
-        e.target.value = e.target.value.replace(/\D/g, '');
-    });
-}
-
-// Setup Password Toggle
-function setupPasswordToggle() {
-    togglePasswordBtn.addEventListener('click', () => {
-        const passwordField = formFields.password;
-        const type = passwordField.type === 'password' ? 'text' : 'password';
-        passwordField.type = type;
-        togglePasswordBtn.textContent = type === 'password' ? '👁️' : '🙈';
-    });
-}
-
-// Validate Individual Field
-function validateField(fieldName) {
-    const field = formFields[fieldName];
-    const rules = validationRules[fieldName];
-    const errorElement = errorElements[fieldName];
-    
-    if (!rules) return true;
-
-    let isValid = true;
-    let errorMessage = '';
-
-    // Required validation
-    if (rules.required) {
-        if (field.type === 'checkbox') {
-            if (!field.checked) {
-                isValid = false;
-                errorMessage = rules.message;
-            }
-        } else if (!field.value.trim()) {
-            isValid = false;
-            errorMessage = rules.message;
-        }
-    }
-
-    // Pattern validation
-    if (isValid && rules.pattern && field.value.trim()) {
-        if (!rules.pattern.test(field.value.trim())) {
-            isValid = false;
-            errorMessage = rules.message;
-        }
-    }
-
-    // Min length validation
-    if (isValid && rules.minLength && field.value.trim()) {
-        if (field.value.trim().length < rules.minLength) {
-            isValid = false;
-            errorMessage = rules.message;
-        }
-    }
-
-    // Match validation (for confirm password)
-    if (isValid && rules.match && field.value) {
-        const matchField = formFields[rules.match];
-        if (field.value !== matchField.value) {
-            isValid = false;
-            errorMessage = rules.message;
-        }
-    }
-
-    // Update UI
-    if (isValid) {
-        field.classList.remove('error');
-        field.classList.add('success');
-        errorElement.textContent = '';
-        errorElement.classList.remove('show');
-    } else {
-        field.classList.remove('success');
-        field.classList.add('error');
-        errorElement.textContent = errorMessage;
-        errorElement.classList.add('show');
-    }
-
-    return isValid;
-}
-
-// Clear Error
-function clearError(fieldName) {
-    const field = formFields[fieldName];
-    const errorElement = errorElements[fieldName];
-    
-    field.classList.remove('error');
-    errorElement.textContent = '';
-    errorElement.classList.remove('show');
-}
-
-// Validate All Fields
-function validateForm() {
-    let isValid = true;
-    
-    Object.keys(formFields).forEach(fieldName => {
-        if (!validateField(fieldName)) {
-            isValid = false;
-        }
-    });
-    
-    return isValid;
-}
 
 // Setup Form Submission
 function setupFormSubmission() {
+    if (!form) return;
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
-        // Validate form
-        if (!validateForm()) {
-            showMessage('Please correct the errors in the form', 'error');
-            // Scroll to first error
-            const firstError = form.querySelector('.error');
-            if (firstError) {
-                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-            return;
+
+        if (!otpSent) {
+            // Step 1: Request OTP
+            await requestOTP();
+        } else {
+            // Step 2: Verify OTP and Register
+            await verifyOTPAndRegister();
         }
-
-        // Prepare form data
-        const formData = {
-            fullName: formFields.fullName.value.trim(),
-            email: formFields.email.value.trim().toLowerCase(),
-            mobile: formFields.mobile.value.trim(),
-            password: formFields.password.value,
-            location: formFields.location.value.trim(),
-            cropType: formFields.cropType.value,
-            language: formFields.language.value,
-            registeredAt: new Date().toISOString()
-        };
-
-        // Submit to backend
-        await submitRegistration(formData);
     });
 }
 
-// Submit Registration to Backend
-async function submitRegistration(formData) {
-    try {
-        // Show loading state
-        submitBtn.disabled = true;
-        submitBtn.classList.add('loading');
-        hideMessage();
+// Setup Password Validation
+function setupPasswordValidation() {
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirmPassword');
 
-        // Make API call
-        const response = await fetch(`${API_URL}/farmers/register`, {
+    if (confirmPassword) {
+        confirmPassword.addEventListener('input', () => {
+            if (password.value !== confirmPassword.value) {
+                confirmPassword.setCustomValidity('Passwords do not match');
+            } else {
+                confirmPassword.setCustomValidity('');
+            }
+        });
+    }
+}
+
+// Step 1: Request OTP
+async function requestOTP() {
+    // Collect form data
+    const fullName = document.getElementById('fullName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const mobile = document.getElementById('mobile').value.trim();
+    const location = document.getElementById('location').value.trim();
+    const cropType = document.getElementById('cropType').value;
+    const language = document.getElementById('language').value;
+    const terms = document.getElementById('terms').checked;
+
+    // Validation
+    if (!fullName || !email || !password || !mobile || !location || !cropType || !language) {
+        showMessage('Please fill all required fields', 'error');
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        showMessage('Passwords do not match', 'error');
+        return;
+    }
+
+    if (password.length < 8) {
+        showMessage('Password must be at least 8 characters', 'error');
+        return;
+    }
+
+    if (!terms) {
+        showMessage('Please accept the terms and conditions', 'error');
+        return;
+    }
+
+    // Store registration data
+    registrationData = {
+        fullName,
+        email,
+        password,
+        mobile,
+        location,
+        cropType,
+        language
+    };
+
+    // Disable button
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending OTP...';
+
+    try {
+        const response = await fetch(`${API_URL}/farmers/register/request-otp`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(formData)
+            body: JSON.stringify({ email, fullName })
         });
 
-        const result = await response.json();
+        const data = await response.json();
 
-        if (response.ok) {
-            // Success
-            showMessage('Registration successful! Redirecting to login...', 'success');
-            form.reset();
-            
-            // Clear all success classes
-            Object.values(formFields).forEach(field => {
-                field.classList.remove('success', 'error');
-            });
+        if (response.ok && data.success) {
+            otpSent = true;
+            showOTPInput();
+            showMessage(`OTP sent to ${email}. Please check your email.`, 'success');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Verify OTP & Register';
+        } else {
+            showMessage(data.message || 'Failed to send OTP', 'error');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Register Now';
+        }
+    } catch (error) {
+        console.error('OTP request error:', error);
+        showMessage('Network error. Please try again.', 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Register Now';
+    }
+}
 
-            // Redirect after 2 seconds
+// Step 2: Verify OTP and Register
+async function verifyOTPAndRegister() {
+    const otp = document.getElementById('otp')?.value.trim();
+
+    if (!otp || otp.length !== 6) {
+        showMessage('Please enter the 6-digit OTP', 'error');
+        return;
+    }
+
+    // Disable button
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Registering...';
+
+    try {
+        const response = await fetch(`${API_URL}/farmers/register/verify-otp`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ...registrationData,
+                otp
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            // Save token and redirect
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.farmer));
+            localStorage.setItem('userType', 'farmer');
+
+            showMessage('Registration successful! Redirecting to dashboard...', 'success');
+
             setTimeout(() => {
-                window.location.href = 'index.html';
+                window.location.href = '/frontend/html/farmer-dashboard.html';
             }, 2000);
         } else {
-            // Error from server
-            showMessage(result.message || 'Registration failed. Please try again.', 'error');
+            showMessage(data.message || 'Registration failed', 'error');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Verify OTP & Register';
         }
     } catch (error) {
         console.error('Registration error:', error);
-        
-        // Show fallback success message if server is not running
-        if (error.message.includes('fetch')) {
-            showMessage('Registration data validated successfully! (Note: Backend server not running)', 'success');
-            console.log('Form Data:', formData);
-            
-            // Reset form after showing success
-            setTimeout(() => {
-                form.reset();
-                Object.values(formFields).forEach(field => {
-                    field.classList.remove('success', 'error');
-                });
-            }, 2000);
-        } else {
-            showMessage('An error occurred. Please try again later.', 'error');
-        }
-    } finally {
-        // Remove loading state
+        showMessage('Network error. Please try again.', 'error');
         submitBtn.disabled = false;
-        submitBtn.classList.remove('loading');
+        submitBtn.textContent = 'Verify OTP & Register';
+    }
+}
+
+// Show OTP Input Field
+function showOTPInput() {
+    // Check if OTP field already exists
+    let otpGroup = document.getElementById('otpGroup');
+    
+    if (!otpGroup) {
+        // Create OTP input group
+        otpGroup = document.createElement('div');
+        otpGroup.id = 'otpGroup';
+        otpGroup.className = 'form-group';
+        otpGroup.style.animation = 'slideDown 0.3s ease-out';
+        
+        otpGroup.innerHTML = `
+            <label for="otp">
+                <span class="label-text">Enter OTP</span>
+                <span class="required">*</span>
+            </label>
+            <input 
+                type="text" 
+                id="otp" 
+                name="otp" 
+                placeholder="Enter 6-digit OTP"
+                maxlength="6"
+                pattern="[0-9]{6}"
+                required
+                style="font-size: 1.2rem; letter-spacing: 0.5rem; text-align: center;"
+            >
+            <span class="error-message" id="otpError"></span>
+            <p style="font-size: 0.85rem; color: #7f8c8d; margin-top: 0.5rem;">
+                OTP has been sent to your email. It will expire in 5 minutes.
+            </p>
+        `;
+        
+        // Insert before submit button
+        const submitContainer = document.querySelector('.form-actions');
+        form.insertBefore(otpGroup, submitContainer);
+        
+        // Disable other form fields
+        document.getElementById('fullName').disabled = true;
+        document.getElementById('email').disabled = true;
+        document.getElementById('password').disabled = true;
+        document.getElementById('confirmPassword').disabled = true;
+        document.getElementById('mobile').disabled = true;
+        document.getElementById('location').disabled = true;
+        document.getElementById('cropType').disabled = true;
+        document.getElementById('language').disabled = true;
+        document.getElementById('terms').disabled = true;
     }
 }
 
 // Show Message
 function showMessage(message, type) {
+    if (!formMessage) return;
+
     formMessage.textContent = message;
-    formMessage.className = 'form-message show ' + type;
+    formMessage.className = `form-message ${type}`;
+    formMessage.style.display = 'block';
+
+    // Scroll to message
     formMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    // Auto-hide after 5 seconds (except success)
+    if (type !== 'success') {
+        setTimeout(() => {
+            formMessage.style.display = 'none';
+        }, 5000);
+    }
 }
 
-// Hide Message
-function hideMessage() {
-    formMessage.className = 'form-message';
-    formMessage.textContent = '';
-}
-
-// Export for testing
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-        validateField,
-        validateForm
-    };
-}
+// Add CSS for form message
+const style = document.createElement('style');
+style.textContent = `
+    .form-message {
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        font-size: 0.95rem;
+        animation: slideDown 0.3s ease-out;
+    }
+    .form-message.success {
+        background: #d4edda;
+        color: #155724;
+        border-left: 4px solid #28a745;
+    }
+    .form-message.error {
+        background: #f8d7da;
+        color: #721c24;
+        border-left: 4px solid #dc3545;
+    }
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+`;
+document.head.appendChild(style);

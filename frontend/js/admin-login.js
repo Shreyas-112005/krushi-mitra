@@ -27,14 +27,32 @@ function initializeLoginPage() {
     // Clear any previous session messages
     hideMessage();
     
+    // Clear any stale tokens
+    localStorage.removeItem('token');
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminData');
+    sessionStorage.clear();
+    
     // Focus on username field
     usernameInput.focus();
     
-    // Check if redirected from unauthorized access
+    // Check URL parameters for error/session messages
     const urlParams = new URLSearchParams(window.location.search);
+    
     if (urlParams.get('session') === 'expired') {
-        showMessage('Your session has expired. Please login again.', 'error');
+        showMessage('⏰ Your session has expired. Please login again.', 'error');
+    } else if (urlParams.get('error') === 'unauthorized') {
+        showMessage('🚫 Unauthorized access. Admin privileges required.', 'error');
+    } else if (urlParams.get('logout') === 'success') {
+        showMessage('✅ You have been successfully logged out.', 'success');
     }
+    
+    // Clear URL parameters after showing message
+    if (urlParams.toString()) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    
+    console.log('🔐 Admin login page initialized');
 }
 
 // Setup Event Listeners

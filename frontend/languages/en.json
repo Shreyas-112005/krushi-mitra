@@ -85,30 +85,25 @@
     "hasAccount": "Already have an account?",
     "registerNow": "Register Now",
     "loginNow": "Login Now"
-  },  "login": {
-    "title": "🌾 Farmer Login",
-    "subtitle": "Welcome back to KRUSHI MITHRA",
-    "email": "📧 Email Address",
+  },
+  "login": {
+    "title": "Farmer Login",
+    "subtitle": "Welcome back! Please login to your account",
+    "email": "Email Address",
     "emailPlaceholder": "farmer@example.com",
-    "password": "🔒 Password",
+    "password": "Password",
     "passwordPlaceholder": "Enter your password",
-    "loginButton": "🚀 Login",
+    "loginButton": "Login",
     "loggingIn": "Logging in...",
     "noAccount": "Don't have an account?",
-    "registerHere": "📝 Register here",
-    "backHome": "🏠 ← Back to Home"
-  },  "login": {
-    "title": "🌾 Farmer Login",
-    "subtitle": "Welcome back to KRUSHI MITHRA",
-    "email": "📧 Email Address",
-    "emailPlaceholder": "farmer@example.com",
-    "password": "🔒 Password",
-    "passwordPlaceholder": "Enter your password",
-    "loginButton": "🚀 Login",
-    "loggingIn": "Logging in...",
-    "noAccount": "Don't have an account?",
-    "registerHere": "📝 Register here",
-    "backHome": "🏠 ← Back to Home"
+    "registerHere": "Register here",
+    "backHome": "← Back to Home",
+    "heroTitle": "KRUSHI MITHRA",
+    "heroSubtitle": "Empowering Karnataka Farmers with Technology",
+    "feature1": "Real-time Weather Updates",
+    "feature2": "Market Price Information",
+    "feature3": "Government Schemes",
+    "feature4": "Multi-language Support"
   },
   "admin": {
     "title": "Admin Dashboard",
@@ -184,9 +179,46 @@
   },
   "register": {
     "title": "Register",
-    "heading": "🌾 Farmer Registration 👨‍🌾",
-    "subtitle": "Join the KRUSHI MITHRA community today! 🚜",
-    "fullName": "👤 Full Name"
+    "heading": "Farmer Registration",
+    "subtitle": "Join the KRUSHI MITHRA community today!",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "email": "Email Address",
+    "emailPlaceholder": "example@email.com",
+    "mobile": "Mobile Number",
+    "mobilePlaceholder": "10-digit mobile number",
+    "password": "Password",
+    "passwordPlaceholder": "Create a strong password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Re-enter your password",
+    "location": "Location",
+    "locationPlaceholder": "Village/City, District, State",
+    "cropType": "Primary Crop Type",
+    "cropTypePlaceholder": "Select your primary crop",
+    "language": "Language Preference",
+    "languagePlaceholder": "Select your preferred language",
+    "terms": "I agree to the Terms and Conditions",
+    "submitButton": "Register Now",
+    "alreadyAccount": "Already have an account?",
+    "loginHere": "Login here",
+    "passwordHelper": "Minimum 8 characters, include uppercase, lowercase, number",
+    "cropOptions": {
+      "rice": "Rice",
+      "wheat": "Wheat",
+      "maize": "Maize",
+      "sugarcane": "Sugarcane",
+      "cotton": "Cotton",
+      "pulses": "Pulses",
+      "vegetables": "Vegetables",
+      "fruits": "Fruits",
+      "spices": "Spices",
+      "other": "Other"
+    },
+    "languageOptions": {
+      "english": "English",
+      "kannada": "Kannada",
+      "hindi": "Hindi"
+    }
   },
   "footer": {
     "copyright": "© 2025 KRUSHI MITHRA. All rights reserved."

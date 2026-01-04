@@ -422,13 +422,13 @@
         <!-- Left Side - Hero Section -->
         <div class="login-hero">
             <div class="hero-icon">🌾</div>
-            <h1>KRUSHI MITHRA</h1>
-            <p>Empowering Karnataka Farmers with Technology</p>
+            <h1 data-i18n="login.heroTitle">KRUSHI MITHRA</h1>
+            <p data-i18n="login.heroSubtitle">Empowering Karnataka Farmers with Technology</p>
             <div class="features-list">
-                <div class="feature-item">Real-time Weather Updates</div>
-                <div class="feature-item">Market Price Information</div>
-                <div class="feature-item">Government Schemes</div>
-                <div class="feature-item">Multi-language Support</div>
+                <div class="feature-item" data-i18n="login.feature1">Real-time Weather Updates</div>
+                <div class="feature-item" data-i18n="login.feature2">Market Price Information</div>
+                <div class="feature-item" data-i18n="login.feature3">Government Schemes</div>
+                <div class="feature-item" data-i18n="login.feature4">Multi-language Support</div>
             </div>
         </div>
 
@@ -436,19 +436,19 @@
         <div class="login-form-container">
             <div class="language-selector">
                 <select id="languageSelect">
-                    <option value="english">English</option>
-                    <option value="kannada">ಕನ್ನಡ</option>
-                    <option value="hindi">हिन्दी</option>
+                    <option value="en">English</option>
+                    <option value="kn">ಕನ್ನಡ</option>
+                    <option value="hi">हिन्दी</option>
                 </select>
             </div>
 
             <div class="form-header">
                 <h2 data-i18n="login.title">Farmer Login</h2>
-                <p data-i18n="login.subtitle">Welcome back! Please login to your account</p>
+                <p data-i18n="login.subtitle">Login with your email and password</p>
             </div>
 
-            <div id="alert" class="alert"></div>
-            
+            <div id="message" class="alert" style="display: none;"></div>
+
             <form id="loginForm" autocomplete="on">
                 <div class="form-group">
                     <label for="email" data-i18n="login.email">Email Address</label>
@@ -458,9 +458,8 @@
                             type="email" 
                             id="email" 
                             name="email" 
-                            placeholder="farmer@example.com" 
-                            data-i18n-placeholder="login.emailPlaceholder"
-                            required 
+                            placeholder="Enter your email"
+                            required
                             autocomplete="email">
                     </div>
                 </div>
@@ -473,15 +472,14 @@
                             type="password" 
                             id="password" 
                             name="password" 
-                            placeholder="Enter your password" 
-                            data-i18n-placeholder="login.passwordPlaceholder"
-                            required 
+                            placeholder="Enter your password"
+                            required
                             autocomplete="current-password">
                     </div>
                 </div>
 
-                <button type="submit" class="btn-login" id="loginBtn" data-i18n="login.loginButton">
-                    Login
+                <button type="submit" class="btn-login" id="submitBtn">
+                    <span data-i18n="login.loginButton">Login</span>
                 </button>
             </form>
 
@@ -498,88 +496,7 @@
         </div>
     </div>
 
-    <script>
-        const loginForm = document.getElementById('loginForm');
-        const loginBtn = document.getElementById('loginBtn');
-        const alert = document.getElementById('alert');
-
-        function showAlert(message, type) {
-            alert.className = `alert alert-${type} show`;
-            alert.textContent = message;
-            setTimeout(() => {
-                alert.classList.remove('show');
-            }, 5000);
-        }
-
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            loginBtn.disabled = true;
-            loginBtn.textContent = 'Logging in...';
-
-            try {
-                const response = await fetch('/api/farmers/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email, password })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    localStorage.setItem('farmerToken', data.token);
-                    localStorage.setItem('farmerData', JSON.stringify(data.farmer));
-                    
-                    showAlert('Login successful! Redirecting...', 'success');
-                    
-                    setTimeout(() => {
-                        window.location.href = 'farmer-dashboard.html';
-                    }, 1000);
-                } else {
-                    showAlert(data.message || 'Login failed. Please try again.', 'error');
-                }
-            } catch (error) {
-                console.error('Login error:', error);
-                showAlert('Connection error. Please check your internet and try again.', 'error');
-            } finally {
-                loginBtn.disabled = false;
-                loginBtn.textContent = 'Login';
-            }
-        });
-
-        // Check if already logged in
-        if (localStorage.getItem('farmerToken')) {
-            window.location.href = 'farmer-dashboard.html';
-        }
-
-        // Initialize language manager
-        document.addEventListener('DOMContentLoaded', async () => {
-            console.log('🌐 Initializing farmer login language support');
-            
-            if (window.krushiLang) {
-                await window.krushiLang.initialize();
-                
-                const languageSelect = document.getElementById('languageSelect');
-                if (languageSelect) {
-                    languageSelect.value = window.krushiLang.currentLang || 'en';
-                    
-                    languageSelect.addEventListener('change', (e) => {
-                        const newLanguage = e.target.value;
-                        console.log('🔄 Changing language to:', newLanguage);
-                        window.krushiLang.changeLanguage(newLanguage);
-                    });
-                    
-                    console.log('✅ Language selector connected');
-                }
-            } else {
-                console.error('❌ Language manager not found');
-            }
-        });
-    </script>
+    <!-- Load farmer login script -->
+    <script src="/frontend/js/farmer-login.js"></script>
 </body>
 </html>

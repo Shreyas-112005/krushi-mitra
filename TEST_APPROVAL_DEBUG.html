@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Farmer Approval - Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-primary { background: #4CAF50; color: white; }
+        .btn-secondary { background: #2196F3; color: white; }
+        .btn-danger { background: #f44336; color: white; }
+        pre {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>🧪 KRUSHI MITHRA - Farmer Approval Debug Tool</h1>
+    
+    <div class="section">
+        <h2>Step 1: Get Admin Token</h2>
+        <button class="btn-primary" onclick="loginAdmin()">🔐 Login as Admin</button>
+        <pre id="tokenOutput">Click Login to get token...</pre>
+    </div>
+
+    <div class="section">
+        <h2>Step 2: Get Pending Farmers</h2>
+        <button class="btn-secondary" onclick="getFarmers()">👥 Fetch Pending Farmers</button>
+        <pre id="farmersOutput">Click to fetch farmers...</pre>
+    </div>
+
+    <div class="section">
+        <h2>Step 3: Approve Farmer</h2>
+        <input type="text" id="farmerIdInput" placeholder="Enter Farmer ID" style="width: 300px; padding: 8px;">
+        <button class="btn-primary" onclick="approveFarmer()">✅ Approve Farmer</button>
+        <pre id="approveOutput">Enter farmer ID and click approve...</pre>
+    </div>
+
+    <div class="section">
+        <h2>Step 4: Verify Approval</h2>
+        <button class="btn-secondary" onclick="verifyApproval()">🔍 Check Status</button>
+        <pre id="verifyOutput">Click to verify...</pre>
+    </div>
+
+    <div class="section">
+        <h2>Quick Test: Register Test Farmer</h2>
+        <button class="btn-primary" onclick="registerTestFarmer()">➕ Register Test Farmer</button>
+        <pre id="registerOutput">Click to register a test farmer...</pre>
+    </div>
+
+    <div class="section">
+        <h2>Debug Console</h2>
+        <pre id="debugConsole" style="height: 200px; overflow-y: auto;"></pre>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let adminToken = localStorage.getItem('token') || '';
+        
+        function log(message, type = 'info') {
+            const console = document.getElementById('debugConsole');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? 'red' : type === 'success' ? 'green' : 'blue';
+            console.innerHTML += `<span style="color: ${color}">[${timestamp}] ${message}</span>\n`;
+            console.scrollTop = console.scrollHeight;
+        }
+
+        async function loginAdmin() {
+            log('Attempting admin login...');
+            try {
+                const response = await fetch(`${API_URL}/admin/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'admin@krushimithra.com',
+                        password: 'Admin@12345'
+                    })
+                });
+                
+                const data = await response.json();
+                log(`Response status: ${response.status}`, response.ok ? 'success' : 'error');
+                
+                if (data.success && data.token) {
+                    adminToken = data.token;
+                    localStorage.setItem('token', adminToken);
+                    document.getElementById('tokenOutput').innerHTML = 
+                        `<span class="success">✅ Login Successful!</span>\n` +
+                        `Token: ${adminToken.substring(0, 50)}...\n` +
+                        `Role: ${data.admin.role}`;
+                    log('✅ Admin login successful', 'success');
+                } else {
+                    document.getElementById('tokenOutput').innerHTML = 
+                        `<span class="error">❌ Login Failed</span>\n${JSON.stringify(data, null, 2)}`;
+                    log('❌ Login failed', 'error');
+                }
+            } catch (error) {
+                document.getElementById('tokenOutput').innerHTML = 
+                    `<span class="error">❌ Error: ${error.message}</span>`;
+                log(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function getFarmers() {
+            if (!adminToken) {
+                alert('Please login first!');
+                return;
+            }
+            
+            log('Fetching pending farmers...');
+            try {
+                const response = await fetch(`${API_URL}/admin/farmers?status=pending`, {
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+                
+                const data = await response.json();
+                log(`Response status: ${response.status}`, response.ok ? 'success' : 'error');
+                
+                document.getElementById('farmersOutput').innerHTML = 
+                    `<span class="${data.success ? 'success' : 'error'}">` +
+                    `Status: ${response.status}\n` +
+                    `Count: ${data.count || 0}\n` +
+                    `</span>\n` +
+                    JSON.stringify(data, null, 2);
+                
+                if (data.farmers && data.farmers.length > 0) {
+                    log(`✅ Found ${data.farmers.length} pending farmer(s)`, 'success');
+                    document.getElementById('farmerIdInput').value = data.farmers[0]._id;
+                } else {
+                    log('⚠️ No pending farmers found');
+                }
+            } catch (error) {
+                document.getElementById('farmersOutput').innerHTML = 
+                    `<span class="error">❌ Error: ${error.message}</span>`;
+                log(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function approveFarmer() {
+            const farmerId = document.getElementById('farmerIdInput').value;
+            if (!farmerId) {
+                alert('Please enter Farmer ID!');
+                return;
+            }
+            if (!adminToken) {
+                alert('Please login first!');
+                return;
+            }
+            
+            log(`Approving farmer: ${farmerId}...`);
+            try {
+                const response = await fetch(`${API_URL}/admin/farmers/${farmerId}/approve`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${adminToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                log(`Response status: ${response.status}`, response.ok ? 'success' : 'error');
+                
+                document.getElementById('approveOutput').innerHTML = 
+                    `<span class="${data.success ? 'success' : 'error'}">` +
+                    `Status: ${response.status}\n` +
+                    `Message: ${data.message}\n` +
+                    `</span>\n` +
+                    JSON.stringify(data, null, 2);
+                
+                if (data.success) {
+                    log('✅ Farmer approved successfully!', 'success');
+                } else {
+                    log(`❌ Approval failed: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                document.getElementById('approveOutput').innerHTML = 
+                    `<span class="error">❌ Error: ${error.message}</span>`;
+                log(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function verifyApproval() {
+            if (!adminToken) {
+                alert('Please login first!');
+                return;
+            }
+            
+            log('Verifying approval status...');
+            try {
+                const response = await fetch(`${API_URL}/admin/farmers`, {
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+                
+                const data = await response.json();
+                
+                const approved = data.farmers?.filter(f => f.status === 'approved') || [];
+                const pending = data.farmers?.filter(f => f.status === 'pending') || [];
+                
+                document.getElementById('verifyOutput').innerHTML = 
+                    `<span class="success">` +
+                    `Total Farmers: ${data.count}\n` +
+                    `Approved: ${approved.length}\n` +
+                    `Pending: ${pending.length}\n` +
+                    `</span>\n\n` +
+                    `Approved Farmers:\n` +
+                    JSON.stringify(approved.map(f => ({ id: f._id, name: f.fullName, email: f.email })), null, 2);
+                
+                log(`✅ Status verified. Approved: ${approved.length}, Pending: ${pending.length}`, 'success');
+            } catch (error) {
+                document.getElementById('verifyOutput').innerHTML = 
+                    `<span class="error">❌ Error: ${error.message}</span>`;
+                log(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function registerTestFarmer() {
+            log('Registering test farmer...');
+            try {
+                const testFarmer = {
+                    fullName: 'Test Farmer ' + Date.now(),
+                    email: `testfarmer${Date.now()}@example.com`,
+                    password: 'Test@123',
+                    mobile: '9876543210',
+                    location: 'Bangalore',
+                    cropType: 'Rice',
+                    farmSize: '5 acres',
+                    language: 'en'
+                };
+                
+                const response = await fetch(`${API_URL}/farmers/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(testFarmer)
+                });
+                
+                const data = await response.json();
+                log(`Response status: ${response.status}`, response.ok ? 'success' : 'error');
+                
+                document.getElementById('registerOutput').innerHTML = 
+                    `<span class="${data.success ? 'success' : 'error'}">` +
+                    `Status: ${response.status}\n` +
+                    `Message: ${data.message}\n` +
+                    `</span>\n` +
+                    JSON.stringify(data, null, 2);
+                
+                if (data.success) {
+                    log(`✅ Test farmer registered: ${testFarmer.email}`, 'success');
+                } else {
+                    log(`❌ Registration failed: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                document.getElementById('registerOutput').innerHTML = 
+                    `<span class="error">❌ Error: ${error.message}</span>`;
+                log(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-load token if available
+        if (adminToken) {
+            document.getElementById('tokenOutput').innerHTML = 
+                `<span class="info">ℹ️ Token loaded from localStorage</span>\n` +
+                `Token: ${adminToken.substring(0, 50)}...`;
+            log('Token loaded from localStorage');
+        }
+    </script>
+</body>
+</html>

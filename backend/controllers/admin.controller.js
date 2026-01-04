@@ -11,37 +11,64 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    console.log('[ADMIN] Login attempt:', email);
+    console.log('[ADMIN LOGIN] Received login request for:', email);
 
     // Check if using JSON storage mode
-    const useJsonStorage = process.env.USE_JSON_STORAGE === 'true' || !process.env.MONGODB_URI;
+    const useJsonStorage = process.env.USE_JSON_STORAGE === 'true';
+    console.log('[ADMIN LOGIN] Using JSON storage mode:', useJsonStorage);
 
     let admin;
     let isValidPassword = false;
 
     if (useJsonStorage) {
+      console.log('[ADMIN LOGIN] Using JSON storage mode authentication');
       // Simple admin check for demo mode
-      if (email === 'admin@krushimithra.com' && password === 'Admin@123') {
+      if (email === 'admin@krushimithra.com' && password === 'Admin@12345') {
         admin = {
-          _id: 'admin-1',
+          _id: 'main_admin_json',
           email: 'admin@krushimithra.com',
-          fullName: 'Super Admin',
-          role: 'superadmin'
+          username: 'main_admin',
+          role: 'super_admin'
         };
         isValidPassword = true;
+        console.log('[ADMIN LOGIN] JSON mode login successful');
+      } else {
+        console.log('[ADMIN LOGIN] JSON mode credentials mismatch');
       }
     } else {
+      console.log('[ADMIN LOGIN] Using MongoDB authentication');
       // Database mode
       admin = await Admin.findOne({ email: email.toLowerCase() });
+      console.log('[ADMIN LOGIN] Admin found in database:', admin ? 'Yes' : 'No');
+      
       if (admin) {
+        console.log('[ADMIN LOGIN] Admin details:', { 
+          username: admin.username, 
+          email: admin.email, 
+          role: admin.role,
+          isActive: admin.isActive 
+        });
         isValidPassword = await admin.comparePassword(password);
+        console.log('[ADMIN LOGIN] Password valid:', isValidPassword);
+      } else {
+        console.log('[ADMIN LOGIN] No admin found with email:', email);
       }
     }
 
     if (!admin || !isValidPassword) {
+      console.log('[ADMIN LOGIN] ❌ Login failed - Invalid credentials');
       return res.status(401).json({
         success: false,
         message: 'Invalid email or password'
+      });
+    }
+
+    // Check if admin is active
+    if (admin.isActive === false) {
+      console.log('[ADMIN LOGIN] ❌ Login failed - Admin account is inactive');
+      return res.status(403).json({
+        success: false,
+        message: 'Your account has been deactivated. Please contact support.'
       });
     }
 
@@ -50,13 +77,19 @@ const login = async (req, res) => {
       { 
         id: admin._id, 
         email: admin.email, 
-        role: admin.role || 'admin'
+        role: admin.role || 'admin',
+        type: 'admin'
       },
-      process.env.JWT_SECRET || 'default-secret-key',
+      process.env.JWT_SECRET || 'krushi_mithra_secret_key_2025_secure_token',
       { expiresIn: '24h' }
     );
 
-    console.log('[ADMIN] ✅ Login successful:', email);
+    console.log('[ADMIN LOGIN] ✅ Login successful for:', email);
+
+    // Update last login
+    if (!useJsonStorage && admin.updateOne) {
+      await admin.updateOne({ lastLogin: new Date() });
+    }
 
     res.json({
       success: true,
@@ -65,12 +98,12 @@ const login = async (req, res) => {
       admin: {
         id: admin._id,
         email: admin.email,
-        fullName: admin.fullName,
+        username: admin.username,
         role: admin.role || 'admin'
       }
     });
   } catch (error) {
-    console.error('[ADMIN] Login error:', error);
+    console.error('[ADMIN LOGIN] Error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error during login'
@@ -79,7 +112,7 @@ const login = async (req, res) => {
 };
 
 /**
- * Get All Farmers (with filtering and pagination)
+ * Get All Farmers (with filtering and pagination) - OPTIMIZED
  */
 const getAllFarmers = async (req, res) => {
   try {
@@ -122,7 +155,7 @@ const getAllFarmers = async (req, res) => {
 
       return res.json({
         success: true,
-        data: safeFarmers,
+        farmers: safeFarmers,
         pagination: {
           total: farmers.length,
           page: parseInt(page),
@@ -138,7 +171,7 @@ const getAllFarmers = async (req, res) => {
       });
     }
 
-    // Database mode
+    // Database mode - OPTIMIZED with lean() and select only needed fields
     const query = {};
     if (status) query.status = status;
     if (search) {
@@ -150,25 +183,44 @@ const getAllFarmers = async (req, res) => {
       ];
     }
 
-    const farmers = await Farmer.find(query)
-      .select('-password')
-      .sort({ registeredAt: -1 })
-      .limit(parseInt(limit))
-      .skip((page - 1) * limit);
+    // Use Promise.all to run queries in parallel
+    const [farmers, total, statsResults] = await Promise.all([
+      Farmer.find(query)
+        .select('-password')
+        .sort({ registeredAt: -1 })
+        .limit(parseInt(limit))
+        .skip((page - 1) * limit)
+        .lean(), // Use lean() for better performance
+      Farmer.countDocuments(query),
+      // Get all stats in one aggregation query
+      Farmer.aggregate([
+        {
+          $group: {
+            _id: '$status',
+            count: { $sum: 1 }
+          }
+        }
+      ])
+    ]);
 
-    const total = await Farmer.countDocuments(query);
-
-    // Get stats
+    // Process stats
     const stats = {
-      total: await Farmer.countDocuments(),
-      pending: await Farmer.countDocuments({ status: 'pending' }),
-      approved: await Farmer.countDocuments({ status: 'approved' }),
-      rejected: await Farmer.countDocuments({ status: 'rejected' })
+      total: 0,
+      pending: 0,
+      approved: 0,
+      rejected: 0
     };
+    
+    statsResults.forEach(stat => {
+      stats.total += stat.count;
+      if (stat._id === 'pending') stats.pending = stat.count;
+      else if (stat._id === 'approved') stats.approved = stat.count;
+      else if (stat._id === 'rejected') stats.rejected = stat.count;
+    });
 
     res.json({
       success: true,
-      data: farmers,
+      farmers: farmers,
       pagination: {
         total,
         page: parseInt(page),
@@ -187,7 +239,7 @@ const getAllFarmers = async (req, res) => {
 };
 
 /**
- * Get Pending Farmers (Awaiting Approval)
+ * Get Pending Farmers (Awaiting Approval) - OPTIMIZED
  */
 const getPendingFarmers = async (req, res) => {
   try {
@@ -204,17 +256,30 @@ const getPendingFarmers = async (req, res) => {
 
       return res.json({
         success: true,
-        data: safeFarmers,
+        farmers: safeFarmers,
         count: safeFarmers.length
       });
     }
 
-    // Database mode
+    // Database mode - Use lean() for better performance
     const farmers = await Farmer.find({ status: 'pending' })
       .select('-password')
-      .sort({ registeredAt: -1 });
+      .sort({ registeredAt: -1 })
+      .lean();
 
     res.json({
+      success: true,
+      farmers: farmers,
+      count: farmers.length
+    });
+  } catch (error) {
+    console.error('[ADMIN] Get pending farmers error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching pending farmers'
+    });
+  }
+};
       success: true,
       data: farmers,
       count: farmers.length
